@@ -4,12 +4,27 @@ using System.Linq;
 
 namespace Shogi1.Domain.Model.Boards
 {
+    /// <summary>
+    /// 位置
+    /// </summary>
     public class Position
     {
+        /// <summary>
+        /// 左上を0とする盤上のインデックス
+        /// </summary>
         public int Value { get; }
+        /// <summary>
+        /// 水平方向 右向き 1始まり
+        /// </summary>
         public int X { get; }
+        /// <summary>
+        /// 垂直方向 下向き 1始まり
+        /// </summary>
         public int Y { get; }
 
+        /// <summary>
+        /// 盤上を指しているかどうか
+        /// </summary>
         public bool IsOnBoard => X is >= 1 and <= 9 && Y is >= 1 and <= 9;
 
         public Position(int value)
@@ -50,6 +65,13 @@ namespace Shogi1.Domain.Model.Boards
 
         public Position JumpDownRight() => new(X - 1, Y + 2);
 
+        /// <summary>
+        /// fromからtoまで一直線に並んでいる時、間にあるPosition
+        /// fromとto自身は含まない
+        /// </summary>
+        /// <param name="from">出発元</param>
+        /// <param name="to">行き先</param>
+        /// <returns>間にあるPosition</returns>
         public static IEnumerable<Position> Range(Position from, Position to)
         {
             var (fx, fy, tx, ty) = (from.X, from.Y, to.X, to.Y);

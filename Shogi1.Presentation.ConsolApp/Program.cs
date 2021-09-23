@@ -24,7 +24,7 @@ namespace Shogi1.Presentation.ConsolApp
         {
             appService_.GameStart += (s, e) =>
             {
-                Console.WriteLine(e);
+                DrawBoard(e);
                 Console.WriteLine();
             };
             appService_.Moved += (s, e) =>
@@ -40,7 +40,7 @@ namespace Shogi1.Presentation.ConsolApp
             appService_.Loop();
         }
 
-        private static void DrawBoard(Board board, MoveBase moveBase)
+        private static void DrawBoard(Board board, MoveBase? moveBase = null)
         {
             Console.WriteLine(moveBase);
             Console.BackgroundColor = bg_;

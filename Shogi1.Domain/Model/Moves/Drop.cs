@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Shogi1.Domain.Model.Moves
 {
+    /// <summary>
+    /// 持ち駒を打つ手
+    /// </summary>
     public class Drop : MoveBase
     {
         public Drop(bool teban, Piece piece, Position to)

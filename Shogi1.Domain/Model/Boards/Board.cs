@@ -8,8 +8,14 @@ using static Shogi1.Domain.Model.Pieces.Piece;
 
 namespace Shogi1.Domain.Model.Boards
 {
+    /// <summary>
+    /// 盤
+    /// </summary>
     public class Board
     {
+        /// <summary>
+        /// 指し手のスタック
+        /// </summary>
         private readonly Stack<MoveBase> stack_ = new();
 
         /// <summary>
@@ -35,6 +41,9 @@ namespace Shogi1.Domain.Model.Boards
         /// </summary>
         public int Turns { get; private set; }
 
+        /// <summary>
+        /// 平手初期局面
+        /// </summary>
         internal Board()
         {
             Pieces = new Piece[]
@@ -56,6 +65,9 @@ namespace Shogi1.Domain.Model.Boards
             Turns = 0;
         }
 
+        /// <summary>
+        /// 手番を入れ替える
+        /// </summary>
         internal void ChangeTeban() => Teban = !Teban;
 
         /// <summary>
@@ -147,6 +159,11 @@ namespace Shogi1.Domain.Model.Boards
                 => Enumerable.Range(1, 9).Select(y => Pieces[new Position(x, y)]).Any(x => x == piece);
         }
 
+        /// <summary>
+        /// 指し手が自殺手かどうか
+        /// </summary>
+        /// <param name="moveBase">指し手</param>
+        /// <returns>自殺手でない/自殺手</returns>
         internal bool IsLegalMove(MoveBase moveBase)
         {
             DoMove(moveBase);
@@ -160,6 +177,10 @@ namespace Shogi1.Domain.Model.Boards
             return GetPseudoMoves().Where(x => IsLegalMove(x)).ToList();
         }
 
+        /// <summary>
+        /// 手を進める
+        /// </summary>
+        /// <param name="moveBase">指し手</param>
         internal void DoMove(MoveBase moveBase)
         {
             stack_.Push(moveBase);
@@ -180,6 +201,9 @@ namespace Shogi1.Domain.Model.Boards
             Turns++;
         }
 
+        /// <summary>
+        /// 手を戻す
+        /// </summary>
         internal void UndoMove()
         {
             var moveBase = stack_.Pop();
@@ -200,6 +224,11 @@ namespace Shogi1.Domain.Model.Boards
             Turns--;
         }
 
+        /// <summary>
+        /// 王手がかかっているかどうか
+        /// </summary>
+        /// <param name="teban">どちらの玉に対する王手を調べたいか</param>
+        /// <returns>王手がかかっている/かかっていない</returns>
         internal bool IsCheck(bool teban)
         {
             if (teban)

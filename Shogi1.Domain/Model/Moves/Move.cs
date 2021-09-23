@@ -5,6 +5,9 @@ using static Shogi1.Domain.Model.Pieces.Piece;
 
 namespace Shogi1.Domain.Model.Moves
 {
+    /// <summary>
+    /// 駒を動かす手
+    /// </summary>
     public class Move : MoveBase
     {
         public Position From { get; }
