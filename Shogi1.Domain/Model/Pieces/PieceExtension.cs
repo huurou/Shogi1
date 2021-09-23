@@ -11,9 +11,7 @@ namespace Shogi1.Domain.Model.Pieces
     {
         public static bool IsEmpty(this Piece piece) => piece == 空;
 
-        public static bool IsWall(this Piece piece) => piece == 壁;
-
-        public static bool IsPiece(this Piece piece) => piece is not 空 and not 壁;
+        public static bool IsPiece(this Piece piece) => piece != 空;
 
         public static bool GetTeban(this Piece piece)
         {
@@ -31,8 +29,8 @@ namespace Shogi1.Domain.Model.Pieces
                 成桂W or 香W or 成香W or
                 歩W or と金W => WHITE,
 
-                壁 or 空 => throw new InvalidOperationException(),
-                _ => throw new InvalidOperationException(),
+                空 => throw new InvalidOperationException(),
+                _ => throw new NotSupportedException(),
             };
         }
 
@@ -66,8 +64,8 @@ namespace Shogi1.Domain.Model.Pieces
             成香W => 成香B,
             歩W => 歩B,
             と金W => と金B,
-            空 or 壁 => throw new InvalidOperationException(),
-            _ => throw new InvalidOperationException(),
+            空 => throw new InvalidOperationException(),
+            _ => throw new NotSupportedException(),
         };
 
         public static bool IsPromotable(this Piece piece)
@@ -86,8 +84,8 @@ namespace Shogi1.Domain.Model.Pieces
                 成銀W or 成桂W or 成香W or
                 と金W => false,
 
-                空 or 壁 => throw new InvalidOperationException(),
-                _ => throw new InvalidOperationException(),
+                空 => throw new InvalidOperationException(),
+                _ => throw new NotSupportedException(),
             };
         }
 
@@ -104,8 +102,8 @@ namespace Shogi1.Domain.Model.Pieces
             飛W or 角W or 金W or
             銀W or 桂W or 香W or 歩W => false,
 
-            空 or 壁 => throw new InvalidOperationException(),
-            _ => throw new InvalidOperationException(),
+            空 => throw new InvalidOperationException(),
+            _ => throw new NotSupportedException(),
         };
 
         public static Piece Promote(this Piece piece) => piece switch
@@ -128,8 +126,8 @@ namespace Shogi1.Domain.Model.Pieces
             成香B or と金B or 王W or
             龍王W or 龍馬W or 金W or
             成銀W or 成桂W or 成香W or
-            と金W or 空 or 壁 => throw new InvalidOperationException(),
-            _ => throw new InvalidOperationException(),
+            と金W or 空 => throw new InvalidOperationException(),
+            _ => throw new NotSupportedException(),
         };
 
         public static Piece Unpromote(this Piece piece) => piece switch
@@ -148,8 +146,8 @@ namespace Shogi1.Domain.Model.Pieces
             桂W or 成桂W => 桂W,
             香W or 成香W => 香W,
             歩W or と金W => 歩W,
-            王B or 王W or 空 or 壁 => throw new InvalidOperationException(),
-            _ => throw new InvalidOperationException(),
+            王B or 王W or 空 => throw new InvalidOperationException(),
+            _ => throw new NotSupportedException(),
         };
 
         public static List<Position> GetPositions(this Piece piece, Position position)
@@ -167,7 +165,7 @@ namespace Shogi1.Domain.Model.Pieces
                         position.DownLeft(),
                         position.Left(),
                         position.UpLeft(),
-                    }.Where(x => x.OnBoard).ToList();
+                    }.Where(x => x.IsOnBoard).ToList();
 
                 case 飛B:
                     return UpToEnd(position)
@@ -182,7 +180,7 @@ namespace Shogi1.Domain.Model.Pieces
                         position.DownRight(),
                         position.DownLeft(),
                         position.UpLeft(),
-                    }.Where(x => x.OnBoard)
+                    }.Where(x => x.IsOnBoard)
                     .Concat(UpToEnd(position))
                     .Concat(RightToEnd(position))
                     .Concat(DownToEnd(position))
@@ -209,7 +207,7 @@ namespace Shogi1.Domain.Model.Pieces
                         position.Down(),
                         position.Left(),
                         position.UpLeft(),
-                    }.Where(x => x.OnBoard).ToList();
+                    }.Where(x => x.IsOnBoard).ToList();
 
                 case 銀B:
                     return new Position[]
@@ -219,7 +217,7 @@ namespace Shogi1.Domain.Model.Pieces
                         position.DownRight(),
                         position.DownLeft(),
                         position.UpLeft(),
-                    }.Where(x => x.OnBoard).ToList();
+                    }.Where(x => x.IsOnBoard).ToList();
 
                 case 成銀B:
                     return new Position[]
@@ -230,14 +228,14 @@ namespace Shogi1.Domain.Model.Pieces
                         position.Down(),
                         position.Left(),
                         position.UpLeft(),
-                    }.Where(x => x.OnBoard).ToList();
+                    }.Where(x => x.IsOnBoard).ToList();
 
                 case 桂B:
                     return new Position[]
                     {
                         position.JumpUpLeft(),
                         position.JumpUpRight(),
-                    }.Where(x => x.OnBoard).ToList();
+                    }.Where(x => x.IsOnBoard).ToList();
 
                 case 成桂B:
                     return new Position[]
@@ -248,7 +246,7 @@ namespace Shogi1.Domain.Model.Pieces
                         position.Down(),
                         position.Left(),
                         position.UpLeft(),
-                    }.Where(x => x.OnBoard).ToList();
+                    }.Where(x => x.IsOnBoard).ToList();
 
                 case 香B:
                     return UpToEnd(position).ToList();
@@ -262,13 +260,13 @@ namespace Shogi1.Domain.Model.Pieces
                         position.Down(),
                         position.Left(),
                         position.UpLeft(),
-                    }.Where(x => x.OnBoard).ToList();
+                    }.Where(x => x.IsOnBoard).ToList();
 
                 case 歩B:
                     return new Position[]
                     {
                         position.Up(),
-                    }.Where(x => x.OnBoard).ToList();
+                    }.Where(x => x.IsOnBoard).ToList();
 
                 case と金B:
                     return new Position[]
@@ -279,7 +277,7 @@ namespace Shogi1.Domain.Model.Pieces
                         position.Down(),
                         position.Left(),
                         position.UpLeft(),
-                    }.Where(x => x.OnBoard).ToList();
+                    }.Where(x => x.IsOnBoard).ToList();
 
                 case 王W:
                     return new Position[]
@@ -292,7 +290,7 @@ namespace Shogi1.Domain.Model.Pieces
                         position.DownLeft(),
                         position.Left(),
                         position.UpLeft(),
-                    }.Where(x => x.OnBoard).ToList();
+                    }.Where(x => x.IsOnBoard).ToList();
 
                 case 飛W:
                     return UpToEnd(position)
@@ -307,7 +305,7 @@ namespace Shogi1.Domain.Model.Pieces
                         position.DownRight(),
                         position.DownLeft(),
                         position.UpLeft(),
-                    }.Where(x => x.OnBoard)
+                    }.Where(x => x.IsOnBoard)
                     .Concat(UpToEnd(position))
                     .Concat(RightToEnd(position))
                     .Concat(DownToEnd(position))
@@ -326,7 +324,7 @@ namespace Shogi1.Domain.Model.Pieces
                         position.Right(),
                         position.Down(),
                         position.Left(),
-                    }.Where(x => x.OnBoard)
+                    }.Where(x => x.IsOnBoard)
                     .Concat(UpRightToEnd(position))
                     .Concat(DownRightToEnd(position))
                     .Concat(DownLeftToEnd(position))
@@ -341,7 +339,7 @@ namespace Shogi1.Domain.Model.Pieces
                         position.Down(),
                         position.DownLeft(),
                         position.Left(),
-                    }.Where(x => x.OnBoard).ToList();
+                    }.Where(x => x.IsOnBoard).ToList();
 
                 case 銀W:
                     return new Position[]
@@ -351,7 +349,7 @@ namespace Shogi1.Domain.Model.Pieces
                         position.Down(),
                         position.DownLeft(),
                         position.UpLeft(),
-                    }.Where(x => x.OnBoard).ToList();
+                    }.Where(x => x.IsOnBoard).ToList();
 
                 case 成銀W:
                     return new Position[]
@@ -362,14 +360,14 @@ namespace Shogi1.Domain.Model.Pieces
                         position.Down(),
                         position.DownLeft(),
                         position.Left(),
-                    }.Where(x => x.OnBoard).ToList();
+                    }.Where(x => x.IsOnBoard).ToList();
 
                 case 桂W:
                     return new Position[]
                     {
                         position.JumpDownLeft(),
                         position.JumpDownRight(),
-                    }.Where(x => x.OnBoard).ToList();
+                    }.Where(x => x.IsOnBoard).ToList();
 
                 case 成桂W:
                     return new Position[]
@@ -380,7 +378,7 @@ namespace Shogi1.Domain.Model.Pieces
                         position.Down(),
                         position.DownLeft(),
                         position.Left(),
-                    }.Where(x => x.OnBoard).ToList();
+                    }.Where(x => x.IsOnBoard).ToList();
 
                 case 香W:
                     return DownToEnd(position).ToList();
@@ -394,13 +392,13 @@ namespace Shogi1.Domain.Model.Pieces
                         position.Down(),
                         position.DownLeft(),
                         position.Left(),
-                    }.Where(x => x.OnBoard).ToList();
+                    }.Where(x => x.IsOnBoard).ToList();
 
                 case 歩W:
                     return new Position[]
                     {
                         position.Down(),
-                    }.Where(x => x.OnBoard).ToList();
+                    }.Where(x => x.IsOnBoard).ToList();
 
                 case と金W:
                     return new Position[]
@@ -411,52 +409,52 @@ namespace Shogi1.Domain.Model.Pieces
                         position.Down(),
                         position.DownLeft(),
                         position.Left(),
-                    }.Where(x => x.OnBoard).ToList();
+                    }.Where(x => x.IsOnBoard).ToList();
 
                 case 空:
-                case 壁:
+                    throw new InvalidOperationException();
                 default: break;
             }
-            throw new InvalidOperationException();
+            throw new NotSupportedException();
 
             IEnumerable<Position> UpToEnd(Position position)
             {
-                while ((position = position.Up()).OnBoard) yield return position;
+                while ((position = position.Up()).IsOnBoard) yield return position;
             }
 
             IEnumerable<Position> UpRightToEnd(Position position)
             {
-                while ((position = position.UpRight()).OnBoard) yield return position;
+                while ((position = position.UpRight()).IsOnBoard) yield return position;
             }
 
             IEnumerable<Position> RightToEnd(Position position)
             {
-                while ((position = position.Right()).OnBoard) yield return position;
+                while ((position = position.Right()).IsOnBoard) yield return position;
             }
 
             IEnumerable<Position> DownRightToEnd(Position position)
             {
-                while ((position = position.DownRight()).OnBoard) yield return position;
+                while ((position = position.DownRight()).IsOnBoard) yield return position;
             }
 
             IEnumerable<Position> DownToEnd(Position position)
             {
-                while ((position = position.Down()).OnBoard) yield return position;
+                while ((position = position.Down()).IsOnBoard) yield return position;
             }
 
             IEnumerable<Position> DownLeftToEnd(Position position)
             {
-                while ((position = position.DownLeft()).OnBoard) yield return position;
+                while ((position = position.DownLeft()).IsOnBoard) yield return position;
             }
 
             IEnumerable<Position> LeftToEnd(Position position)
             {
-                while ((position = position.Left()).OnBoard) yield return position;
+                while ((position = position.Left()).IsOnBoard) yield return position;
             }
 
             IEnumerable<Position> UpLeftToEnd(Position position)
             {
-                while ((position = position.UpLeft()).OnBoard) yield return position;
+                while ((position = position.UpLeft()).IsOnBoard) yield return position;
             }
         }
     }

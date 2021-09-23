@@ -10,18 +10,18 @@ namespace Shogi1.Domain.Model.Boards
         public int X { get; }
         public int Y { get; }
 
-        public bool OnBoard => X is >= 1 and <= 9 && Y is >= 1 and <= 9;
+        public bool IsOnBoard => X is >= 1 and <= 9 && Y is >= 1 and <= 9;
 
         public Position(int value)
         {
             Value = value;
-            X = 10 - value % 11;
-            Y = value / 11;
+            X = 9 - value % 9;
+            Y = value / 9 + 1;
         }
 
         public Position(int x, int y)
         {
-            Value = 10 - x + y * 11;
+            Value = y * 9 - x;
             X = x;
             Y = y;
         }

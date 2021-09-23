@@ -18,7 +18,7 @@ namespace Shogi1.Domain.Model.Moves
             sb.Append(To.ToString());
             sb.Append(' ');
             sb.Append(Piece);
-            sb.Append("打");
+            sb.Append('打');
 
             return sb.ToString();
         }
