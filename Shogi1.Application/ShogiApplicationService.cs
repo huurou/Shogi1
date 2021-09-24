@@ -1,4 +1,4 @@
-﻿using Shogi1.Domain.Model;
+﻿using Shogi1.Domain.Model.AIs;
 using Shogi1.Domain.Model.Boards;
 using Shogi1.Domain.Model.Games;
 using Shogi1.Domain.Model.Moves;
@@ -9,23 +9,37 @@ namespace Shogi1.Application
     public class ShogiApplicationService
     {
         public event EventHandler<Board>? GameStart;
-        public event EventHandler<(Board board, MoveBase move)>? Moved;
+        public event EventHandler<(Board board, MoveBase move, double eval)>? Moved;
         public event EventHandler<Result>? GameEnd;
+        public event EventHandler<(int win, int lose, int draw)>? LoopEnd;
 
-        private readonly Board board_ = new();
+        private readonly Game game_;
+        private int win_;
+        private int lose_;
+        private int draw_;
 
-        public void Loop()
+        public ShogiApplicationService(IAI black, IAI white)
         {
-            GameStart?.Invoke(this, board_);
-            while (true)
+            game_ = new(black, white);
+
+            game_.GameStart += (s, e) => GameStart?.Invoke(s, e);
+            game_.Moved += (s, e) => Moved?.Invoke(s, e);
+            game_.GameEnd += (s, e) =>
             {
-                var moves = board_.GetLegalMoves();
-                if (moves.Count == 0) break;
-                var move = moves[RandomProvider.Next(moves.Count)];
-                board_.DoMove(move);
-                Moved?.Invoke(this, (board_, move));
+                GameEnd?.Invoke(s, e);
+                if (e == Result.Win) win_++;
+                else if (e == Result.Lose) lose_++;
+                else draw_++;
+            };
+        }
+
+        public void GameLoop(int count)
+        {
+            for (var i = 0; i < count; i++)
+            {
+                game_.Run();
             }
-            GameEnd?.Invoke(this, board_.Teban ? Result.Lose : Result.Win);
+            LoopEnd?.Invoke(this, (win_, lose_, draw_));
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Shogi1.Application;
+using Shogi1.Domain.Model.AIs;
 using Shogi1.Domain.Model.Boards;
 using Shogi1.Domain.Model.Games;
 using Shogi1.Domain.Model.Moves;
@@ -11,10 +12,12 @@ namespace Shogi1.Presentation.ConsolApp
 {
     internal class Program
     {
-        private static readonly ShogiApplicationService appService_ = new();
+        private static readonly ShogiApplicationService appService_
+            = new(new AllRandomAI(),
+                new AllRandomAI());
 
         private static readonly ConsoleColor bg_ = ConsoleColor.DarkYellow;
-        private static readonly ConsoleColor fg_ = ConsoleColor.DarkMagenta;
+        private static readonly ConsoleColor fg_ = ConsoleColor.Magenta;
         private static readonly ConsoleColor blackPiece_ = ConsoleColor.Black;
         private static readonly ConsoleColor whitePiece_ = ConsoleColor.White;
         private static readonly ConsoleColor empty_ = ConsoleColor.DarkGray;
@@ -22,6 +25,8 @@ namespace Shogi1.Presentation.ConsolApp
 
         private static void Main()
         {
+            Console.CursorVisible = false;
+            Console.ResetColor();
             appService_.GameStart += (s, e) =>
             {
                 DrawBoard(e);
@@ -29,20 +34,24 @@ namespace Shogi1.Presentation.ConsolApp
             };
             appService_.Moved += (s, e) =>
             {
-                DrawBoard(e.board, e.move);
+                DrawBoard(e.board, e.move, e.eval);
                 Console.WriteLine();
             };
             appService_.GameEnd += (s, e) =>
             {
                 Console.WriteLine($"{(e == Result.Win ? "先手勝ち" : "後手勝ち")}");
+                Console.Clear();
             };
+            appService_.LoopEnd += (s, e) => Console.WriteLine($"先手勝ち:{e.win} 後手勝ち:{e.lose} 引き分け:{e.draw}");
 
-            appService_.Loop();
+            appService_.GameLoop(10);
         }
 
-        private static void DrawBoard(Board board, MoveBase? moveBase = null)
+        private static void DrawBoard(Board board, MoveBase? moveBase = null, double? eval = null)
         {
-            Console.WriteLine(moveBase);
+            Console.Write(new string(' ', 50));
+            Console.SetCursorPosition( 0, Console.CursorTop);
+            Console.WriteLine(eval is null ? "" : $"{moveBase} eval:{eval}");
             Console.BackgroundColor = bg_;
             Console.ForegroundColor = fg_;
             Console.WriteLine("９８７６５４３２１");
@@ -103,18 +112,23 @@ namespace Shogi1.Presentation.ConsolApp
                 });
             }
             Console.ForegroundColor = fg_;
+            Console.Write(new string(' ', 50));
+            Console.SetCursorPosition(0, Console.CursorTop);
             Console.Write("先手持ち駒:");
             foreach (var h in board.HandsBlack.GroupBy(x => x))
             {
                 Console.Write($"{h.Key}{h.Count()} ");
             }
             Console.WriteLine();
+            Console.Write(new string(' ', 50));
+            Console.SetCursorPosition(0, Console.CursorTop);
             Console.Write("後手持ち駒:");
             foreach (var h in board.HandsWhite.GroupBy(x => x))
             {
                 Console.Write($"{h.Key}{h.Count()} ");
             }
             Console.ResetColor();
+            Console.SetCursorPosition(0, 0);
         }
     }
 }

@@ -27,6 +27,7 @@ namespace Shogi1.Domain.Model.Boards
         /// 先手の持ち駒
         /// </summary>
         public List<Piece> HandsBlack { get; }
+
         /// <summary>
         /// 後手の持ち駒
         /// </summary>
@@ -174,8 +175,11 @@ namespace Shogi1.Domain.Model.Boards
 
         internal List<MoveBase> GetLegalMoves()
         {
-            return GetPseudoMoves().Where(x => IsLegalMove(x)).ToList();
+            if (legalMoves_ is null) legalMoves_ = GetPseudoMoves().Where(x => IsLegalMove(x)).ToList();
+            return legalMoves_;
         }
+
+        private List<MoveBase>? legalMoves_;
 
         /// <summary>
         /// 手を進める
@@ -184,6 +188,7 @@ namespace Shogi1.Domain.Model.Boards
         internal void DoMove(MoveBase moveBase)
         {
             stack_.Push(moveBase);
+            legalMoves_ = null;
             if (moveBase.Teban != Teban) throw new InvalidOperationException();
             var hands = moveBase.Teban ? HandsBlack : HandsWhite;
             if (moveBase is Move move)
@@ -207,6 +212,7 @@ namespace Shogi1.Domain.Model.Boards
         internal void UndoMove()
         {
             var moveBase = stack_.Pop();
+            legalMoves_ = null;
             if (moveBase.Teban == Teban) throw new InvalidOperationException();
             var hands = moveBase.Teban ? HandsBlack : HandsWhite;
             if (moveBase is Move move)
@@ -537,5 +543,7 @@ namespace Shogi1.Domain.Model.Boards
             }
             return false;
         }
+
+        internal bool IsChackMate() => GetLegalMoves().Count == 0;
     }
 }
