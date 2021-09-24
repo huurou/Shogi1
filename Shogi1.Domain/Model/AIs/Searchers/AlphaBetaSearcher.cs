@@ -3,6 +3,7 @@ using Shogi1.Domain.Model.Boards;
 using Shogi1.Domain.Model.Moves;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Shogi1.Domain.Model.AIs.Searchers
 {
@@ -28,14 +29,18 @@ namespace Shogi1.Domain.Model.AIs.Searchers
                 return (lms[0], ev);
             }
             var results = new double[count];
-            for (var i = 0; i < count; i++)
+            var boards = Enumerable.Range(0, count).Select(_ => board.Clone());
+            Parallel.For(0, count, i =>
             {
-                board.DoMove(lms[i]);
-                results[i] = AlphaBetaPruning(board, evaluator_, depth - 1);
-                board.UndoMove();
-            }
+                var b = boards.ElementAt(i);
+                b.DoMove(lms[i]);
+                results[i] = AlphaBetaPruning(b, evaluator_, depth - 1);
+                b.UndoMove();
+            });
             var eval = board.Teban ? results.Max() : results.Min();
-            return (lms[Array.IndexOf(results, eval)], eval);
+            var indices = results.Select((x, i) => (x, i)).Where(x => x.x == eval).Select(x => x.i);
+            var index = indices.ElementAt(RandomProvider.Next(indices.Count()));
+            return (lms[index], eval);
         }
 
         internal static double AlphaBetaPruning(Board board, IEvaluator evaluator, int depth,
@@ -61,7 +66,7 @@ namespace Shogi1.Domain.Model.AIs.Searchers
                 foreach (var lm in lms)
                 {
                     board.DoMove(lm);
-                    alpha = Math.Min(beta, AlphaBetaPruning(board, evaluator, depth - 1, alpha, beta));
+                    beta = Math.Min(beta, AlphaBetaPruning(board, evaluator, depth - 1, alpha, beta));
                     board.UndoMove();
                     if (alpha >= beta) break; // αカット
                 }

@@ -146,5 +146,7 @@ namespace Shogi1.Domain.Model.Boards
             };
             return $"{x}{y}";
         }
+
+        internal Position Clone() => new Position(Value);
     }
 }

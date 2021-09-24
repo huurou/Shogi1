@@ -25,5 +25,7 @@ namespace Shogi1.Domain.Model.Moves
 
             return sb.ToString();
         }
+
+        internal override Drop Clone() => new(Teban, Piece, To);
     }
 }

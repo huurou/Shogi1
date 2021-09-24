@@ -13,8 +13,8 @@ namespace Shogi1.Presentation.ConsolApp
     internal class Program
     {
         private static readonly ShogiApplicationService appService_
-            = new(new AllRandomAI(),
-                new AllRandomAI());
+            = new(new PieceValueAlphaBetaAI(4),
+                new PieceValueAlphaBetaAI(4));
 
         private static readonly ConsoleColor bg_ = ConsoleColor.DarkYellow;
         private static readonly ConsoleColor fg_ = ConsoleColor.Magenta;
@@ -40,11 +40,10 @@ namespace Shogi1.Presentation.ConsolApp
             appService_.GameEnd += (s, e) =>
             {
                 Console.WriteLine($"{(e == Result.Win ? "先手勝ち" : "後手勝ち")}");
-                Console.Clear();
             };
             appService_.LoopEnd += (s, e) => Console.WriteLine($"先手勝ち:{e.win} 後手勝ち:{e.lose} 引き分け:{e.draw}");
 
-            appService_.GameLoop(10);
+            appService_.GameLoop(1);
         }
 
         private static void DrawBoard(Board board, MoveBase? moveBase = null, double? eval = null)
@@ -128,7 +127,7 @@ namespace Shogi1.Presentation.ConsolApp
                 Console.Write($"{h.Key}{h.Count()} ");
             }
             Console.ResetColor();
-            Console.SetCursorPosition(0, 0);
+            //Console.SetCursorPosition(0, 0);
         }
     }
 }

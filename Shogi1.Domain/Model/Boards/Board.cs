@@ -16,22 +16,22 @@ namespace Shogi1.Domain.Model.Boards
         /// <summary>
         /// 指し手のスタック
         /// </summary>
-        private readonly Stack<MoveBase> stack_ = new();
+        private Stack<MoveBase> stack_ = new();
 
         /// <summary>
         /// 盤上の駒
         /// </summary>
-        public Piece[] Pieces { get; }
+        public Piece[] Pieces { get; private set; }
 
         /// <summary>
         /// 先手の持ち駒
         /// </summary>
-        public List<Piece> HandsBlack { get; }
+        public List<Piece> HandsBlack { get; private set; }
 
         /// <summary>
         /// 後手の持ち駒
         /// </summary>
-        public List<Piece> HandsWhite { get; }
+        public List<Piece> HandsWhite { get; private set; }
 
         /// <summary>
         /// 手番 True:先手/False:後手
@@ -41,6 +41,8 @@ namespace Shogi1.Domain.Model.Boards
         /// 手数
         /// </summary>
         public int Turns { get; private set; }
+
+        internal bool IsChackMate => GetLegalMoves().Count == 0;
 
         /// <summary>
         /// 平手初期局面
@@ -107,7 +109,10 @@ namespace Shogi1.Domain.Model.Boards
                         if (!(piece is 歩B or 香B or 桂B && to.Y == 1 ||
                             piece is 桂B && to.Y == 2 ||
                             piece is 桂W && to.Y == 8 ||
-                            piece is 歩W or 香W or 桂W && to.Y == 9))
+                            piece is 歩W or 香W or 桂W && to.Y == 9 ||
+                            // 飛角歩は成らない手は考えない
+                            piece is 飛B or 角B or 歩B && (from.Y is >= 1 and <= 3 || to.Y is >= 1 and <= 3) ||
+                            piece is 飛W or 角W or 歩W && (from.Y is >= 7 and <= 9 || to.Y is >= 7 and <= 9)))
                         {
                             moves.Add(Pieces[to].IsPiece()
                             ? new Move(Teban, piece, to, from, captured: true, pieceCaptured: Pieces[to])
@@ -115,8 +120,8 @@ namespace Shogi1.Domain.Model.Boards
                         }
                         // 成り
                         if (piece.IsPromotable() &&
-                            (Teban && from.Y is >= 1 and <= 3 && to.Y is >= 1 and <= 3 ||
-                            !Teban && from.Y is >= 7 and <= 9 && to.Y is >= 7 and <= 9))
+                            (Teban && (from.Y is >= 1 and <= 3 || to.Y is >= 1 and <= 3) ||
+                            !Teban && (from.Y is >= 7 and <= 9 || to.Y is >= 7 and <= 9)))
                         {
                             moves.Add(Pieces[to].IsPiece()
                                ? new Move(Teban, piece, to, from, captured: true, pieceCaptured: Pieces[to], promoted: true)
@@ -544,6 +549,14 @@ namespace Shogi1.Domain.Model.Boards
             return false;
         }
 
-        internal bool IsChackMate() => GetLegalMoves().Count == 0;
+        internal Board Clone() => new()
+        {
+            stack_ = new(stack_.Select(x => x.Clone())),
+            Pieces = (Piece[])Pieces.Clone(),
+            HandsBlack = new(HandsBlack),
+            HandsWhite = new(HandsWhite),
+            Teban = Teban,
+            Turns = Turns,
+        };
     }
 }

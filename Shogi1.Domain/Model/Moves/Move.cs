@@ -45,5 +45,7 @@ namespace Shogi1.Domain.Model.Moves
 
             return sb.ToString();
         }
+        internal override Move Clone()
+            => new(Teban, Piece, To, From, Captured, PieceCaptured, Promoted);
     }
 }

@@ -11,15 +11,15 @@ namespace Shogi1.Domain.Model.Moves
         /// <summary>
         /// 指し手の手番
         /// </summary>
-        public bool Teban { get; }
+        public bool Teban { get; private set; }
         /// <summary>
         /// 指された駒
         /// </summary>
-        public Piece Piece { get; }
+        public Piece Piece { get; private set; }
         /// <summary>
         /// 駒を移動/打った場所
         /// </summary>
-        public Position To { get; }
+        public Position To { get; private set; }
 
         protected MoveBase(bool teban, Piece piece, Position to)
         {
@@ -27,5 +27,8 @@ namespace Shogi1.Domain.Model.Moves
             Piece = piece;
             To = to;
         }
+
+        internal abstract MoveBase Clone();
+            
     }
 }

@@ -25,7 +25,7 @@ namespace Shogi1.Domain.Model.Games
         {
             board_ = new();
             GameStart?.Invoke(this, board_);
-            while (!board_.IsChackMate())
+            while (!board_.IsChackMate)
             {
                 var (move, eval) = board_.Teban ? black_.DecideMove(board_) : white_.DecideMove(board_);
                 board_.DoMove(move);
