@@ -10,5 +10,6 @@ namespace Shogi1.Domain.Model
         private static readonly ThreadLocal<Random> randomWrapper_ = new(() => new(Interlocked.Increment(ref seed_)));
 
         public static int Next(int count) => randomWrapper_.Value!.Next(count);
+        public static double NextDouble() => randomWrapper_.Value!.NextDouble();
     }
 }

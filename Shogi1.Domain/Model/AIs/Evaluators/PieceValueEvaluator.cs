@@ -8,12 +8,14 @@ namespace Shogi1.Domain.Model.AIs.Evaluators
 {
     internal class PieceValueEvaluator : IEvaluator
     {
+        private readonly Random random_ = new();
         public double Evaluate(Board board)
         {
             return board.IsChackMate
                 ? board.Teban ? -99999999 : 99999999
                 : board.Pieces.Where(x=>x.IsPiece()).Sum(x => PieceValue(x)) 
-                    + (board.HandsBlack.Concat(board.HandsWhite).Where(x => x.IsPiece()).Sum(x => PieceValue(x))) * 1.113;
+                    + board.HandsBlack.Concat(board.HandsWhite).Where(x => x.IsPiece()).Sum(x => PieceValue(x)) * 1.113
+                    + random_.NextDouble();
 
             static double PieceValue(Piece piece) => piece switch
             {

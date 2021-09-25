@@ -2,8 +2,6 @@
 using Shogi1.Domain.Model.Boards;
 using Shogi1.Domain.Model.Moves;
 using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Shogi1.Domain.Model.AIs.Searchers
 {
@@ -28,6 +26,44 @@ namespace Shogi1.Domain.Model.AIs.Searchers
                 board.UndoMove();
                 return (lms[0], ev);
             }
+#if true
+            var alpha = double.NegativeInfinity;
+            var beta = double.PositiveInfinity;
+            var eval = 0D;
+            var index = 0;
+            if (board.Teban)
+            {
+                eval = alpha;
+                for (var i = 0; i < count; i++)
+                {
+                    board.DoMove(lms[i]);
+                    alpha = Math.Max(alpha, AlphaBetaPruning(board, evaluator_, depth - 1, alpha, beta));
+                    Console.WriteLine($"{lms[i],-30}{alpha}");
+                    if (eval < alpha)
+                    {
+                        index = i;
+                        eval = alpha;
+                    }
+                    board.UndoMove();
+                }
+            }
+            else
+            {
+                eval = beta;
+                for (var i = 0; i < count; i++)
+                {
+                    board.DoMove(lms[i]);
+                    beta = Math.Min(beta, AlphaBetaPruning(board, evaluator_, depth - 1, alpha, beta));
+                    Console.WriteLine($"{lms[i],-30}{beta}");
+                    if (eval > beta)
+                    {
+                        index = i;
+                        eval = beta;
+                    }
+                    board.UndoMove();
+                }
+            }
+#else
             var results = new double[count];
             var boards = Enumerable.Range(0, count).Select(_ => board.Clone());
             Parallel.For(0, count, i =>
@@ -35,11 +71,13 @@ namespace Shogi1.Domain.Model.AIs.Searchers
                 var b = boards.ElementAt(i);
                 b.DoMove(lms[i]);
                 results[i] = AlphaBetaPruning(b, evaluator_, depth - 1);
+                Console.WriteLine($"{lms[i],-30}{results[i]}");
                 b.UndoMove();
             });
             var eval = board.Teban ? results.Max() : results.Min();
             var indices = results.Select((x, i) => (x, i)).Where(x => x.x == eval).Select(x => x.i);
             var index = indices.ElementAt(RandomProvider.Next(indices.Count()));
+#endif
             return (lms[index], eval);
         }
 
