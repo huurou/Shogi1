@@ -193,10 +193,17 @@ namespace Shogi1.Domain.Model.Pieces
                         .Concat(UpLeftToEnd(position)).ToList();
 
                 case 龍馬B:
-                    return UpRightToEnd(position)
-                   .Concat(DownRightToEnd(position))
-                   .Concat(DownLeftToEnd(position))
-                   .Concat(UpLeftToEnd(position)).ToList();
+                    return new Position[]
+                    {
+                        position.Up(),
+                        position.Right(),
+                        position.Down(),
+                        position.Left(),
+                    }.Where(x => x.IsOnBoard)
+                    .Concat(UpRightToEnd(position))
+                    .Concat(DownRightToEnd(position))
+                    .Concat(DownLeftToEnd(position))
+                    .Concat(UpLeftToEnd(position)).ToList();
 
                 case 金B:
                     return new Position[]
