@@ -180,7 +180,15 @@ namespace Shogi1.Domain.Model.Boards
 
         internal List<MoveBase> GetLegalMoves()
         {
-            if (legalMoves_ is null) legalMoves_ = GetPseudoMoves().Where(x => IsLegalMove(x)).ToList();
+            if (legalMoves_ is not null) return legalMoves_;
+            var lms = GetPseudoMoves().Where(x => IsLegalMove(x)).ToList();
+            var moves = lms.OfType<Move>();
+            var drops = lms.OfType<Drop>();
+            var cps = moves.Where(x => x.Captured && x.Promoted).OfType<MoveBase>();
+            var cs = moves.Where(x => x.Captured && !x.Promoted).OfType<MoveBase>();
+            var ps = moves.Where(x => !x.Captured && x.Promoted).OfType<MoveBase>();
+            var others = moves.Where(x => !x.Captured && !x.Promoted).OfType<MoveBase>();
+            legalMoves_ = cps.Concat(cs).Concat(ps).Concat(drops).Concat(others).ToList();
             return legalMoves_;
         }
 
