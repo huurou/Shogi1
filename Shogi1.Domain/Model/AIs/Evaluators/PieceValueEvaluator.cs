@@ -1,6 +1,7 @@
 ﻿using Shogi1.Domain.Model.Boards;
 using Shogi1.Domain.Model.Pieces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using static Shogi1.Domain.Model.Pieces.Piece;
 
@@ -9,47 +10,69 @@ namespace Shogi1.Domain.Model.AIs.Evaluators
     internal class PieceValueEvaluator : IEvaluator
     {
         private readonly Random random_ = new();
-        public double Evaluate(Board board)
-        {
-            return board.IsChackMate
-                ? board.Teban ? -99999999 : 99999999
-                : board.Pieces.Where(x=>x.IsPiece()).Sum(x => PieceValue(x)) 
-                    + board.HandsBlack.Concat(board.HandsWhite).Where(x => x.IsPiece()).Sum(x => PieceValue(x)) * 1.113
-                    + random_.NextDouble();
 
-            static double PieceValue(Piece piece) => piece switch
+        private readonly int[] pieceValues_ = new int[]
+        {
+            0, 0, 990, 1395, 855, 945, 540, 495, 540, 405, 540, 315, 540, 90, 540,
+            0, -990, -1395, -855, -945, -540, -495, -540, -405, -540, -315, -540, -90, -540,
+        };
+
+        public int Evaluate(Board board)
+            => board.IsChackMate
+                ? board.Teban ? -99999999 : 99999999
+                : PieceValue(board);
+
+        private int PieceValue(Board board)
+            => board.Pieces.Where(x => x.IsPiece()).Sum(x => pieceValues_[(int)x]) * 920 / 1024
+                + board.HandsBlack.Concat(board.HandsWhite).Where(x => x.IsPiece()).Sum(x => pieceValues_[(int)x])
+                + random_.Next(31) - 15;
+    }
+
+    internal class PieceValueAndEffectEvaluator : IEvaluator
+    {
+        private readonly int[] pieceValues_ = new int[]
+        {
+            0, 0, 990, 1395, 855, 945, 540, 495, 540, 405, 540, 315, 540, 90, 540,
+            0, -990, -1395, -855, -945, -540, -495, -540, -405, -540, -315, -540, -90, -540,
+        };
+
+        private readonly List<int> playerEffectValues_ = Enumerable.Range(0, 9).Select(i => 68 * 1024 / (i + 1)).ToList();
+        private readonly List<int> opponentEffectValues_ = Enumerable.Range(0, 9).Select(i => 96 * 1024 / (i + 1)).ToList();
+
+        public int Evaluate(Board board)
+            => board.IsChackMate
+                ? board.Teban ? -99999999 : 99999999
+                : PieceAndEffectValue(board);
+
+        private int PieceAndEffectValue(Board board)
+        {
+            var res = 0;
+            for (var y = 1; y <= 9; y++)
             {
-                王B => 0,
-                飛B => 990,
-                龍王B => 1395,
-                角B => 855,
-                龍馬B => 945,
-                金B => 540,
-                銀B => 495,
-                成銀B => 540,
-                桂B => 405,
-                成桂B => 540,
-                香B => 315,
-                成香B => 540,
-                歩B => 90,
-                と金B => 540,
-                王W => 0,
-                飛W => -990,
-                龍王W => -1395,
-                角W => -855,
-                龍馬W => -945,
-                金W => -540,
-                銀W => -495,
-                成銀W => -540,
-                桂W => -405,
-                成桂W => -540,
-                香W => -315,
-                成香W => -540,
-                歩W => -90,
-                と金W => -540,
-                空 => 0,
-                _ => throw new NotImplementedException(),
-            };
+                for (var x = 1; x <= 9; x++)
+                {
+                    var p = new Position(x, y);
+                    var (eb, ew) = board.Effects(p);
+                    var (db, dw) = (Dist(p, new Position(Array.IndexOf(board.Pieces, 王B))),
+                                    Dist(p, new Position(Array.IndexOf(board.Pieces, 王W))));
+                    res += (eb * playerEffectValues_[db] - ew * opponentEffectValues_[db]
+                        - ew * playerEffectValues_[dw] + eb * opponentEffectValues_[dw]) / 1024;
+                    var piece = board.Pieces[p];
+                    if (piece.IsEmpty()) continue;
+                    res += pieceValues_[(int)piece] * 920 / 1024;
+                }
+            }
+            return res + board.HandsBlack.Concat(board.HandsWhite).Where(x => x.IsPiece()).Sum(x => pieceValues_[(int)x]);
         }
+
+        /// <summary>
+        /// ある升から升への距離を求める
+        /// 筋と段でたくさん離れている方の数をその距離とする
+        /// </summary>
+        /// <param name="p1"></param>
+        /// <param name="p2"></param>
+        /// <returns></returns>
+        private int Dist(Position p1, Position p2)
+            => Math.Max(Math.Abs(p1.X - p2.X), Math.Abs(p1.Y - p2.Y));
     }
 }

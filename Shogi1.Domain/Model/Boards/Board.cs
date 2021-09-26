@@ -558,5 +558,187 @@ namespace Shogi1.Domain.Model.Boards
             Teban = Teban,
             Turns = Turns,
         };
+
+        internal (int b, int w) Effects(Position position)
+        {
+            // 先手の駒の利きの数
+            var b = 0;
+            //後手の駒の利きの数
+            var w = 0;
+            // 上
+            var p = position.Up();
+            if (p.IsOnBoard)
+            {
+                var piece = Pieces[p];
+                if (piece is 王B or 龍馬B or 金B or
+                    成銀B or 成桂B or 成香B or
+                    と金B) b++;
+                if (piece is 王W or 龍馬W or 金W or
+                    銀W or 成銀W or 成桂W or
+                    成香W or 歩W or と金W) w++;
+                while (p.IsOnBoard)
+                {
+                    piece = Pieces[p];
+                    if (piece.IsEmpty()) p = p.Up();
+                    else if (piece is 飛B or 龍王B) { b++; break; }
+                    else if (piece is 飛W or 龍王W or 香W) { w++; break; }
+                    else break;
+                }
+            }
+
+            // 右上
+            p = position.UpRight();
+            if (p.IsOnBoard)
+            {
+                var piece = Pieces[p];
+                if (piece is 王B or 龍王B or 銀B) b++;
+                if (piece is 王W or 龍王W or 金W or
+                    銀W or 成銀W or 成桂W or
+                    成香W or と金W) w++;
+
+                while (p.IsOnBoard)
+                {
+                    piece = Pieces[p];
+                    if (piece.IsEmpty()) p = p.UpRight();
+                    else if (piece is 角B or 龍馬B) { b++; break; }
+                    else if (piece is 角W or 龍馬W) { w++; break; }
+                    else break;
+                }
+            }
+
+            // 右
+            p = position.Right();
+            if (p.IsOnBoard)
+            {
+                var piece = Pieces[p];
+                if (piece is 王B or 龍馬B or 金B or
+                    成銀B or 成桂B or 成香B or
+                    と金B) b++;
+                if (piece is 王W or 龍馬W or 金W or
+                    成銀W or 成桂W or 成香W or
+                    と金W) w++;
+
+                while (p.IsOnBoard)
+                {
+                    piece = Pieces[p];
+                    if (piece.IsEmpty()) p = p.Right();
+                    else if (piece is 飛B or 龍王B) { b++; break; }
+                    else if (piece is 飛W or 龍王W) { w++; break; }
+                    else break;
+                }
+            }
+
+            // 右下
+            p = position.DownRight();
+            if (p.IsOnBoard)
+            {
+                var piece = Pieces[p];
+                if (piece is 王B or 龍王B or 金B or
+                    銀B or 成銀B or 成桂B or
+                    成香B or と金B) b++;
+                if (piece is 王W or 龍王W or 銀W) w++;
+
+                while (p.IsOnBoard)
+                {
+                    piece = Pieces[p];
+                    if (piece.IsEmpty()) p = p.DownRight();
+                    else if (piece is 角B or 龍馬B) { b++; break; }
+                    else if (piece is 角W or 龍馬W) { w++; break; }
+                    else break;
+                }
+            }
+
+            // 下
+            p = position.Down();
+            if (p.IsOnBoard)
+            {
+                var piece = Pieces[p];
+                if (piece is 王B or 龍馬B or 金B or
+                    銀B or 成銀B or 成桂B or
+                    成香B or 歩B or と金B) b++;
+                if (piece is 王W or 龍馬W or 金W or
+                    成銀W or 成桂W or 成香W or
+                    と金W) w++;
+
+                while (p.IsOnBoard)
+                {
+                    piece = Pieces[p];
+                    if (piece.IsEmpty()) p = p.Down();
+                    else if (piece is 飛B or 龍王B or 香B) { b++; break; }
+                    else if (piece is 飛W or 龍王W) { w++; break; }
+                    else break;
+                }
+            }
+
+            // 左下
+            p = position.DownLeft();
+            if (p.IsOnBoard)
+            {
+                var piece = Pieces[p];
+                if (piece is 王B or 龍王B or 金B or
+                    銀B or 成銀B or 成桂B or
+                    成香B or と金B) b++;
+                if (piece is 王W or 龍王W or 銀W) w++;
+
+                while (p.IsOnBoard)
+                {
+                    piece = Pieces[p];
+                    if (piece.IsEmpty()) p = p.DownLeft();
+                    else if (piece is 角B or 龍馬B) { b++; break; }
+                    else if (piece is 角W or 龍馬W) { w++; break; }
+                    else break;
+                }
+            }
+
+            // 左
+            p = position.Left();
+            if (p.IsOnBoard)
+            {
+                var piece = Pieces[p];
+                if (piece is 王B or 龍馬B or 金B or
+                    成銀B or 成桂B or 成香B or
+                    と金B) b++;
+                if (piece is 王W or 龍馬W or 金W or
+                    成銀W or 成桂W or 成香W or
+                    と金W) w++;
+
+                while (p.IsOnBoard)
+                {
+                    piece = Pieces[p];
+                    if (piece.IsEmpty()) p = p.Left();
+                    else if (piece is 飛B or 龍王B) { b++; break; }
+                    else if (piece is 飛W or 龍王W) { w++; break; }
+                    else break;
+                }
+            }
+
+            // 左上
+            p = position.UpLeft();
+            if (p.IsOnBoard)
+            {
+                var piece = Pieces[p];
+                if (piece is 王B or 龍王B or 銀B) b++;
+                if (piece is 王W or 龍王W or 金W or
+                    銀W or 成銀W or 成桂W or
+                    成香W or と金W) w++;
+
+                while (p.IsOnBoard)
+                {
+                    piece = Pieces[p];
+                    if (piece.IsEmpty()) p = p.UpLeft();
+                    else if (piece is 角B or 龍馬B) { b++; break; }
+                    else if (piece is 角W or 龍馬W) { w++; break; }
+                    else break;
+                }
+            }
+
+            //桂馬
+            if (position.JumpDownLeft().IsOnBoard && Pieces[position.JumpDownLeft()] == 桂B) b++;
+            if (position.JumpDownRight().IsOnBoard && Pieces[position.JumpDownRight()] == 桂B) b++;
+            if (position.JumpUpRight().IsOnBoard && Pieces[position.JumpUpRight()] == 桂W) w++;
+            if (position.JumpUpRight().IsOnBoard && Pieces[position.JumpUpRight()] == 桂W) w++;
+
+            return (b, w);
+        }
     }
 }

@@ -9,6 +9,6 @@ namespace Shogi1.Domain.Model.AIs.Evaluators
         /// </summary>
         /// <param name="board">盤</param>
         /// <returns>評価値</returns>
-        double Evaluate(Board board);
+        int Evaluate(Board board);
     }
 }

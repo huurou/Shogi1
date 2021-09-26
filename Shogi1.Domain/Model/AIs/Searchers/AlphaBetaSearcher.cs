@@ -27,8 +27,8 @@ namespace Shogi1.Domain.Model.AIs.Searchers
                 return (lms[0], ev);
             }
 #if true
-            var alpha = double.NegativeInfinity;
-            var beta = double.PositiveInfinity;
+            var alpha = int.MinValue;
+            var beta = int.MaxValue;
             var eval = 0D;
             var index = 0;
             if (board.Teban)
@@ -81,9 +81,7 @@ namespace Shogi1.Domain.Model.AIs.Searchers
             return (lms[index], eval);
         }
 
-        internal static double AlphaBetaPruning(Board board, IEvaluator evaluator, int depth,
-                                                double alpha = double.NegativeInfinity,
-                                                double beta = double.PositiveInfinity)
+        internal static int AlphaBetaPruning(Board board, IEvaluator evaluator, int depth, int alpha, int beta)
         {
             if (depth <= 0) return evaluator.Evaluate(board);
             var lms = board.GetLegalMoves();

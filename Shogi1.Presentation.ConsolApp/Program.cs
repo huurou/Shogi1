@@ -13,7 +13,7 @@ namespace Shogi1.Presentation.ConsolApp
     internal class Program
     {
         private static readonly ShogiApplicationService appService_
-            = new(new PieceValueAlphaBetaAI(4),
+            = new(new PieceAndEffectValueAlphaBetaAI(4),
                 new PieceValueAlphaBetaAI(4));
 
         private static readonly ConsoleColor bg_ = ConsoleColor.DarkYellow;
