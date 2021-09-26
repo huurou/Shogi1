@@ -2,6 +2,7 @@
 using Shogi1.Domain.Model.Boards;
 using Shogi1.Domain.Model.Moves;
 using System;
+using static Shogi1.Domain.Consts;
 
 namespace Shogi1.Domain.Model.AIs.Searchers
 {
@@ -38,11 +39,11 @@ namespace Shogi1.Domain.Model.AIs.Searchers
                 {
                     board.DoMove(lms[i]);
                     alpha = Math.Max(alpha, AlphaBetaPruning(board, evaluator_, depth - 1, alpha, beta));
-                    Console.WriteLine($"{lms[i],-30}{alpha}");
                     if (eval < alpha)
                     {
                         index = i;
                         eval = alpha;
+                        Console.WriteLine($"{lms[i],-30}{alpha}");
                     }
                     board.UndoMove();
                 }
@@ -54,11 +55,11 @@ namespace Shogi1.Domain.Model.AIs.Searchers
                 {
                     board.DoMove(lms[i]);
                     beta = Math.Min(beta, AlphaBetaPruning(board, evaluator_, depth - 1, alpha, beta));
-                    Console.WriteLine($"{lms[i],-30}{beta}");
                     if (eval > beta)
                     {
                         index = i;
                         eval = beta;
+                        Console.WriteLine($"{lms[i],-30}{beta}");
                     }
                     board.UndoMove();
                 }

@@ -25,4 +25,14 @@ namespace Shogi1.Domain.Model.AIs
 
         public (MoveBase moveBase, double eval) DecideMove(Board board) => searcher_.Search(board, depth_);
     }
+
+    public class EffectValueAlphaBetaAI : IAI
+    {
+        private readonly ISearcher searcher_ = new AlphaBetaSearcher(new EffectValueEvaluator());
+        private readonly int depth_;
+
+        public EffectValueAlphaBetaAI(int depth) => depth_ = depth;
+
+        public (MoveBase moveBase, double eval) DecideMove(Board board) => searcher_.Search(board, depth_);
+    }
 }
