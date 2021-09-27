@@ -6,4 +6,8 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Shogi1.Application\Shogi1.Application.csproj" />
+  </ItemGroup>
+
 </Project>
