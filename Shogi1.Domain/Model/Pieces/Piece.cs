@@ -1,0 +1,35 @@
+﻿namespace Shogi1.Domain.Model.Pieces
+{
+    internal enum Piece
+    {
+        空,
+        王B,
+        飛B,
+        龍王B,
+        角B,
+        龍馬B,
+        金B,
+        銀B,
+        成銀B,
+        桂B,
+        成桂B,
+        香B,
+        成香B,
+        歩B,
+        と金B,
+        王W,
+        飛W,
+        龍王W,
+        角W,
+        龍馬W,
+        金W,
+        銀W,
+        成銀W,
+        桂W,
+        成桂W,
+        香W,
+        成香W,
+        歩W,
+        と金W,
+    }
+}

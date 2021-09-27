@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31624.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shogi1.Application", "Shogi1.Application\Shogi1.Application.csproj", "{C2CF1FFE-7802-474A-A7E7-AF0FD623D45A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shogi1.Application", "Shogi1.Application\Shogi1.Application.csproj", "{C2CF1FFE-7802-474A-A7E7-AF0FD623D45A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shogi1.Domain", "Shogi1.Domain\Shogi1.Domain.csproj", "{4F840603-0225-40CD-95BD-0D27666CBDC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shogi1.Domain", "Shogi1.Domain\Shogi1.Domain.csproj", "{4F840603-0225-40CD-95BD-0D27666CBDC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shogi1.Presentation.ConsoleApp", "Shogi1.Presentation.ConsoleApp\Shogi1.Presentation.ConsoleApp.csproj", "{35E2C57B-ABE8-4702-A3F6-206A31042A1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shogi1.Presentation.ConsoleApp", "Shogi1.Presentation.ConsoleApp\Shogi1.Presentation.ConsoleApp.csproj", "{35E2C57B-ABE8-4702-A3F6-206A31042A1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shogi1.Presentation.WPF", "Shogi1.Presentation.WPF\Shogi1.Presentation.WPF.csproj", "{057A862A-6D13-4D68-9765-C37249DDA4B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shogi1.Presentation.WPF", "Shogi1.Presentation.WPF\Shogi1.Presentation.WPF.csproj", "{057A862A-6D13-4D68-9765-C37249DDA4B4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
