@@ -2,6 +2,7 @@
 using Shogi1.Domain.Model.Boards;
 using Shogi1.Domain.Model.Moves;
 using System;
+using static Shogi1.Domain.Consts;
 
 namespace Shogi1.Domain.Model.AIs.Searchers
 {
@@ -44,6 +45,7 @@ namespace Shogi1.Domain.Model.AIs.Searchers
                         Console.WriteLine($"{lms[i],-30}{alpha}");
                     }
                     board.UndoMove();
+                    if (eval == W_CHECKMATE) break;
                 }
             }
             else
@@ -60,6 +62,7 @@ namespace Shogi1.Domain.Model.AIs.Searchers
                         Console.WriteLine($"{lms[i],-30}{beta}");
                     }
                     board.UndoMove();
+                    if (eval == B_CHECKMATE) break;
                 }
             }
             return (lms[index], eval);

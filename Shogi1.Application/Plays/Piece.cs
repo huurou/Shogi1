@@ -28,6 +28,10 @@ namespace Shogi1.Application.Plays
 
     public static class PieceExtension
     {
+        public static bool IsNone(this Piece piece) => piece == None;
+
+        public static bool IsPiece(this Piece piece) => !piece.IsNone();
+
         /// <summary>
         /// 一文字で表示する
         /// </summary>

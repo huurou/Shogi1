@@ -10,6 +10,7 @@ using System.Linq;
 using static Shogi1.Application.Games.Result;
 using static Shogi1.Application.Plays.Color;
 using static Shogi1.Application.Plays.Piece;
+using static Shogi1.Domain.Model.Pieces.Piece;
 using ModelBoard = Shogi1.Domain.Model.Boards.Board;
 using ModelMoveBase = Shogi1.Domain.Model.Moves.MoveBase;
 using ModelPiece = Shogi1.Domain.Model.Pieces.Piece;
@@ -84,35 +85,35 @@ namespace Shogi1.Application
 
         private static Piece ToPiece(ModelPiece piece) => piece switch
         {
-            ModelPiece.空 => None,
-            ModelPiece.王B => 玉将,
-            ModelPiece.飛B => 飛車,
-            ModelPiece.龍王B => 龍王,
-            ModelPiece.角B => 角行,
-            ModelPiece.龍馬B => 龍馬,
-            ModelPiece.金B => 金将,
-            ModelPiece.銀B => 銀将,
-            ModelPiece.成銀B => 成銀,
-            ModelPiece.桂B => 桂馬,
-            ModelPiece.成桂B => 成桂,
-            ModelPiece.香B => 香車,
-            ModelPiece.成香B => 成香,
-            ModelPiece.歩B => 歩兵,
-            ModelPiece.と金B => と金,
-            ModelPiece.王W => 王将,
-            ModelPiece.飛W => 飛車,
-            ModelPiece.龍王W => 龍王,
-            ModelPiece.角W => 角行,
-            ModelPiece.龍馬W => 龍馬,
-            ModelPiece.金W => 金将,
-            ModelPiece.銀W => 銀将,
-            ModelPiece.成銀W => 成銀,
-            ModelPiece.桂W => 桂馬,
-            ModelPiece.成桂W => 成桂,
-            ModelPiece.香W => 香車,
-            ModelPiece.成香W => 成香,
-            ModelPiece.歩W => 歩兵,
-            ModelPiece.と金W => と金,
+            空 => None,
+            王B => 玉将,
+            飛B => 飛車,
+            龍王B => 龍王,
+            角B => 角行,
+            龍馬B => 龍馬,
+            金B => 金将,
+            銀B => 銀将,
+            成銀B => 成銀,
+            桂B => 桂馬,
+            成桂B => 成桂,
+            香B => 香車,
+            成香B => 成香,
+            歩B => 歩兵,
+            と金B => と金,
+            王W => 王将,
+            飛W => 飛車,
+            龍王W => 龍王,
+            角W => 角行,
+            龍馬W => 龍馬,
+            金W => 金将,
+            銀W => 銀将,
+            成銀W => 成銀,
+            桂W => 桂馬,
+            成桂W => 成桂,
+            香W => 香車,
+            成香W => 成香,
+            歩W => 歩兵,
+            と金W => と金,
             _ => throw new NotImplementedException(),
         };
 
