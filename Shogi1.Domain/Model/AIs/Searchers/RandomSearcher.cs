@@ -8,7 +8,7 @@ namespace Shogi1.Domain.Model.AIs.Searchers
     /// </summary>
     internal class RandomSearcher : ISearcher
     {
-        public (MoveBase moveBase, double eval) Search(Board board, int depth)
+        public (MoveBase moveBase, int eval) Search(Board board, int depth)
         {
             var lms = board.GetLegalMoves();
             return (lms[RandomProvider.Next(lms.Count)], 0);

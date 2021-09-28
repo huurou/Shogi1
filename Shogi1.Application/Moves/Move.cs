@@ -16,7 +16,7 @@ namespace Shogi1.Application.Moves
         /// <summary>
         /// 成ったかどうか
         /// </summary>
-        public bool IsPromote { get; }
+        public bool IsPromoted { get; }
 
         /// <summary>
         /// 成った後の駒
@@ -35,12 +35,12 @@ namespace Shogi1.Application.Moves
         public Piece CapturedPiece { get; }
 
         public Move(Color color, Position from, Position to, Piece piece, int eval,
-                    bool isPromote = false, Piece promotedPiece = None,
+                    bool isPromoted = false, Piece promotedPiece = None,
                     bool isCaptured = false, Piece capturedPiece = None)
             : base(color, to, piece, eval)
         {
             From = from;
-            IsPromote = isPromote;
+            IsPromoted = isPromoted;
             PromotedPiece = promotedPiece;
             IsCaptured = isCaptured;
             CapturedPiece = capturedPiece;

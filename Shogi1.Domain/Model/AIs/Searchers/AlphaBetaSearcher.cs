@@ -14,7 +14,7 @@ namespace Shogi1.Domain.Model.AIs.Searchers
 
         internal AlphaBetaSearcher(IEvaluator evaluator) => evaluator_ = evaluator;
 
-        public (MoveBase moveBase, double eval) Search(Board board, int depth)
+        public (MoveBase moveBase, int eval) Search(Board board, int depth)
         {
             var lms = board.GetLegalMoves();
             var count = lms.Count;
@@ -28,7 +28,7 @@ namespace Shogi1.Domain.Model.AIs.Searchers
             }
             var alpha = int.MinValue;
             var beta = int.MaxValue;
-            var eval = 0D;
+            int eval;
             var index = 0;
             if (board.Teban)
             {

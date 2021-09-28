@@ -9,5 +9,7 @@ namespace Shogi1.Application.Events
     public class GameFinishedEventArgs : EventArgs
     {
         public Result Result { get; }
+
+        public GameFinishedEventArgs(Result result) => Result = result;
     }
 }

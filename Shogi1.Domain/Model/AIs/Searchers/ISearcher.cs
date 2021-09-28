@@ -11,6 +11,6 @@ namespace Shogi1.Domain.Model.AIs.Searchers
         /// <param name="board">盤</param>
         /// <param name="depth">深さ</param>
         /// <returns>(指し手、評価値)</returns>
-        (MoveBase moveBase, double eval) Search(Board board, int depth);
+        (MoveBase moveBase, int eval) Search(Board board, int depth);
     }
 }

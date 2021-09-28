@@ -11,7 +11,7 @@ namespace Shogi1.Domain.Model.AIs
     {
         private readonly RandomSearcher searcher_ = new();
 
-        public (MoveBase moveBase, double eval) DecideMove(Board board)
+        public (MoveBase moveBase, int eval) DecideMove(Board board)
             => searcher_.Search(board, 0);
     }
 }

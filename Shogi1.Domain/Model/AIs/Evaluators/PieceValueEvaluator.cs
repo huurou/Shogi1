@@ -76,8 +76,8 @@ namespace Shogi1.Domain.Model.AIs.Evaluators
             0, -990, -1395, -855, -945, -540, -495, -540, -405, -540, -315, -540, -90, -540,
         };
 
-        private readonly List<int> playerEffectValues_ = Enumerable.Range(0, 9).Select(i => 68 * 1024 / (i + 1)).ToList();
-        private readonly List<int> opponentEffectValues_ = Enumerable.Range(0, 9).Select(i => 96 * 1024 / (i + 1)).ToList();
+        private readonly List<int> playerEffectValues_ = Enumerable.Range(0, 9).Select(i => 85 * 1024 / (i + 1)).ToList();
+        private readonly List<int> opponentEffectValues_ = Enumerable.Range(0, 9).Select(i => 98 * 1024 / (i + 1)).ToList();
 
         public int Evaluate(Board board)
             => board.IsChackMate

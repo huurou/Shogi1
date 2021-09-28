@@ -8,7 +8,7 @@ namespace Shogi1.Domain.Model.Games
     internal class Game
     {
         public event EventHandler<Board>? GameStart;
-        public event EventHandler<(Board board, MoveBase move, double eval)>? Moved;
+        public event EventHandler<(Board board, MoveBase move, int eval)>? Moved;
         public event EventHandler<Result>? GameEnd;
 
         private readonly IAI black_;
