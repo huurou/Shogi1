@@ -28,9 +28,9 @@ namespace Shogi1.Application
 
         // とりあえずここに書く
         // UIから選択できるようになるといいなあ
-        private readonly IAI black_ = new PieceAndEffectValueAlphaBetaAI(4);
+        private readonly IAI black_ = new PieceAndEffectValueAlphaBetaAI(5);
 
-        private readonly IAI white_ = new PieceValueAlphaBetaAI(4);
+        private readonly IAI white_ = new PieceValueAlphaBetaAI(5);
 
         private readonly Game game_;
 

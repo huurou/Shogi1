@@ -42,7 +42,7 @@ namespace Shogi1.Domain.Model.AIs.Searchers
                     {
                         index = i;
                         eval = alpha;
-                        Console.WriteLine($"{lms[i],-30}{alpha}");
+                        Console.WriteLine($"{lms[i],-40}{alpha}");
                     }
                     board.UndoMove();
                     if (eval == W_CHECKMATE) break;
@@ -59,7 +59,7 @@ namespace Shogi1.Domain.Model.AIs.Searchers
                     {
                         index = i;
                         eval = beta;
-                        Console.WriteLine($"{lms[i],-30}{beta}");
+                        Console.WriteLine($"{lms[i],-40}{beta}");
                     }
                     board.UndoMove();
                     if (eval == B_CHECKMATE) break;
