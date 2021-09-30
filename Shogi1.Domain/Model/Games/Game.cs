@@ -5,25 +5,27 @@ using System;
 
 namespace Shogi1.Domain.Model.Games
 {
-    internal class Game
+    public class Game
     {
-        public event EventHandler<Board>? GameStart;
-        public event EventHandler<(Board board, MoveBase move, int eval)>? Moved;
-        public event EventHandler<Result>? GameEnd;
+        internal event EventHandler<Board>? GameStart;
+        internal event EventHandler<(Board board, MoveBase move, int eval)>? Moved;
+        internal event EventHandler<Result>? GameEnd;
 
         private readonly IAI black_;
         private readonly IAI white_;
-        private Board board_ = new();
+        private readonly Board board_ = new();
 
-        internal Game(IAI black, IAI white)
+        private readonly IGameRepository gameRepository_;
+
+        internal Game(IAI black, IAI white, IGameRepository gameRepository)
         {
             black_ = black;
             white_ = white;
+            gameRepository_ = gameRepository;
         }
 
         internal void Run()
         {
-            board_ = new();
             GameStart?.Invoke(this, board_);
             while (!board_.IsChackMate)
             {

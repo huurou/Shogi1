@@ -2,6 +2,8 @@
 using Shogi1.Domain.Model.Boards;
 using Shogi1.Domain.Model.Moves;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using static Shogi1.Domain.Consts;
 
 namespace Shogi1.Domain.Model.AIs.Searchers
@@ -27,6 +29,7 @@ namespace Shogi1.Domain.Model.AIs.Searchers
                 board.UndoMove();
                 return (lms[0], ev);
             }
+            lms = Sort(board, evaluator_, lms);
             var alpha = int.MinValue;
             var beta = int.MaxValue;
             int eval;
@@ -68,7 +71,7 @@ namespace Shogi1.Domain.Model.AIs.Searchers
             return (lms[index], eval);
         }
 
-        internal static int AlphaBetaPruning(Board board, IEvaluator evaluator, int depth, int alpha, int beta)
+        private static int AlphaBetaPruning(Board board, IEvaluator evaluator, int depth, int alpha, int beta)
         {
             if (depth <= 0) return evaluator.Evaluate(board);
             var lms = board.GetLegalMoves();
@@ -95,6 +98,20 @@ namespace Shogi1.Domain.Model.AIs.Searchers
                 }
                 return beta;
             }
+        }
+
+        private static List<MoveBase> Sort(Board board, IEvaluator evaluator, List<MoveBase> moves)
+        {
+            var mes = moves.Select(x =>
+            {
+                board.DoMove(x);
+                var eval = AlphaBetaPruning(board, evaluator, 2, int.MinValue, int.MaxValue);
+                board.UndoMove();
+                return (x, eval);
+            });
+            return board.Teban
+                ? mes.OrderByDescending(x => x.eval).Select(x => x.x).ToList()
+                : mes.OrderBy(x => x.eval).Select(x => x.x).ToList();
         }
     }
 }

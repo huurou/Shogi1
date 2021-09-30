@@ -13,6 +13,8 @@ namespace Shogi1.Domain.Model.AIs.Evaluators
         // 利きの数の閾値
         private const int EFFECT_TRESHOLD = 4;
 
+        private readonly Random random_ = new();
+
         private readonly int[] pieceValues_ = new int[]
         {
             0, 0, 990, 1395, 855, 945, 540, 495, 540, 405, 540, 315, 540, 90, 540,
@@ -106,7 +108,8 @@ namespace Shogi1.Domain.Model.AIs.Evaluators
                     res += pieceValues_[(int)piece] * 920 / 1024;
                 }
             }
-            return res + board.HandsBlack.Concat(board.HandsWhite).Where(x => x.IsPiece()).Sum(x => pieceValues_[(int)x]);
+            return res + board.HandsBlack.Concat(board.HandsWhite).Where(x => x.IsPiece()).Sum(x => pieceValues_[(int)x])
+                + random_.Next(51) - 25;
         }
 
         /// <summary>
