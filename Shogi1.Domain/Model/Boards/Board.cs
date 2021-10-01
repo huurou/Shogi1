@@ -11,12 +11,12 @@ namespace Shogi1.Domain.Model.Boards
     /// <summary>
     /// 盤
     /// </summary>
-    internal class Board
+    public class Board
     {
         /// <summary>
         /// 指し手のスタック
         /// </summary>
-        private readonly Stack<MoveBase> stack_ = new();
+        public Stack<MoveBase> Stack { get; } = new();
 
         /// <summary>
         /// 盤上の駒
@@ -192,7 +192,7 @@ namespace Shogi1.Domain.Model.Boards
         /// <param name="moveBase">指し手</param>
         internal void DoMove(MoveBase moveBase)
         {
-            stack_.Push(moveBase);
+            Stack.Push(moveBase);
             legalMoves_ = null;
             if (moveBase.Teban != Teban) throw new InvalidOperationException();
             var hands = moveBase.Teban ? HandsBlack : HandsWhite;
@@ -216,7 +216,7 @@ namespace Shogi1.Domain.Model.Boards
         /// </summary>
         internal void UndoMove()
         {
-            var moveBase = stack_.Pop();
+            var moveBase = Stack.Pop();
             legalMoves_ = null;
             if (moveBase.Teban == Teban) throw new InvalidOperationException();
             var hands = moveBase.Teban ? HandsBlack : HandsWhite;

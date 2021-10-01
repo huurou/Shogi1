@@ -1,6 +1,6 @@
 ﻿namespace Shogi1.Domain.Model.Pieces
 {
-    internal enum Piece
+    public enum Piece
     {
         空,
         王B,

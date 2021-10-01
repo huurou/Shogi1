@@ -4,6 +4,7 @@ using Shogi1.Application.Plays;
 using Shogi1.Domain.Model.AIs;
 using Shogi1.Domain.Model.Games;
 using Shogi1.Domain.Model.Pieces;
+using Shogi1.Infrastructure.Games;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,11 @@ using static Shogi1.Application.Plays.Piece;
 using static Shogi1.Domain.Model.Pieces.Piece;
 using ModelBoard = Shogi1.Domain.Model.Boards.Board;
 using ModelMoveBase = Shogi1.Domain.Model.Moves.MoveBase;
+
 using ModelPiece = Shogi1.Domain.Model.Pieces.Piece;
+
 using ModelResult = Shogi1.Domain.Model.Games.Result;
+
 using Piece = Shogi1.Application.Plays.Piece;
 
 namespace Shogi1.Application
@@ -28,15 +32,15 @@ namespace Shogi1.Application
 
         // とりあえずここに書く
         // UIから選択できるようになるといいなあ
-        private readonly IAI black_ = new PieceAndEffectValueAlphaBetaAI(4);
-
-        private readonly IAI white_ = new PieceAndEffectValueAlphaBetaAI(4);
+        private readonly IAI black_ = new PieceAndEffectValueAlphaBetaAI(5);
+        private readonly IAI white_ = new PieceAndEffectValueAlphaBetaAI(5);
+        private readonly IGameRepository gameRepository_ = new KifGameRepository();
 
         private readonly Game game_;
 
         public ShogiApplicationService()
         {
-            game_ = new(black_, white_);
+            game_ = new(black_, white_, gameRepository_);
 
             game_.GameStart += (s, e) => GameStarted?.Invoke(s, ToGameStartedEventArgs(e));
             game_.Moved += (s, e) => Moved?.Invoke(s, ToMovedEventArgs(e.board, e.move, e.eval));

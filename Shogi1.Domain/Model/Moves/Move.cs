@@ -8,12 +8,12 @@ namespace Shogi1.Domain.Model.Moves
     /// <summary>
     /// 駒を動かす手
     /// </summary>
-    internal class Move : MoveBase
+    public class Move : MoveBase
     {
-        internal Position From { get; }
+        public Position From { get; }
         internal bool Captured { get; }
         internal Piece PieceCaptured { get; }
-        internal bool Promoted { get; }
+        public bool Promoted { get; }
 
         internal Move(bool teban, Piece piece, Position to, Position from,
                     bool captured = false, Piece pieceCaptured = 空, bool promoted = false)

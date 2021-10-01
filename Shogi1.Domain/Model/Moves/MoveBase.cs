@@ -6,7 +6,7 @@ namespace Shogi1.Domain.Model.Moves
     /// <summary>
     /// 指し手
     /// </summary>
-    internal abstract class MoveBase
+    public abstract class MoveBase
     {
         /// <summary>
         /// 指し手の手番
@@ -15,11 +15,11 @@ namespace Shogi1.Domain.Model.Moves
         /// <summary>
         /// 指された駒
         /// </summary>
-        internal Piece Piece { get; private set; }
+        public Piece Piece { get; private set; }
         /// <summary>
         /// 駒を移動/打った場所
         /// </summary>
-        internal Position To { get; private set; }
+        public Position To { get; private set; }
 
         protected internal MoveBase(bool teban, Piece piece, Position to)
         {

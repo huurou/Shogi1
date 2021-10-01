@@ -7,7 +7,7 @@ namespace Shogi1.Domain.Model.Boards
     /// <summary>
     /// 位置
     /// </summary>
-    internal class Position
+    public class Position
     {
         /// <summary>
         /// 左上を0とする盤上のインデックス
@@ -16,11 +16,11 @@ namespace Shogi1.Domain.Model.Boards
         /// <summary>
         /// 水平方向 右向き 1始まり
         /// </summary>
-        internal int X { get; }
+        public int X { get; }
         /// <summary>
         /// 垂直方向 下向き 1始まり
         /// </summary>
-        internal int Y { get; }
+        public int Y { get; }
 
         /// <summary>
         /// 盤上を指しているかどうか

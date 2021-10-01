@@ -3,7 +3,7 @@ using Shogi1.Domain.Model.Moves;
 
 namespace Shogi1.Domain.Model.AIs
 {
-    internal interface IAI
+    public interface IAI
     {
         /// <summary>
         /// 指し手を決定する

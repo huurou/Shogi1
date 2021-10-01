@@ -7,7 +7,7 @@ namespace Shogi1.Domain.Model.Moves
     /// <summary>
     /// 持ち駒を打つ手
     /// </summary>
-    internal class Drop : MoveBase
+    public class Drop : MoveBase
     {
         internal Drop(bool teban, Piece piece, Position to)
             : base(teban, piece, to) { }

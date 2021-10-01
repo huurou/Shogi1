@@ -11,30 +11,38 @@ namespace Shogi1.Domain.Model.Games
         internal event EventHandler<(Board board, MoveBase move, int eval)>? Moved;
         internal event EventHandler<Result>? GameEnd;
 
-        private readonly IAI black_;
-        private readonly IAI white_;
-        private readonly Board board_ = new();
+        public DateTime Start { get; private set; }
+        public DateTime End { get; private set; }
+
+        public IAI Black { get; }
+        public IAI White { get; }
+        public Board Board { get; } = new();
 
         private readonly IGameRepository gameRepository_;
 
         internal Game(IAI black, IAI white, IGameRepository gameRepository)
         {
-            black_ = black;
-            white_ = white;
+            Black = black;
+            White = white;
             gameRepository_ = gameRepository;
         }
 
         internal void Run()
         {
-            GameStart?.Invoke(this, board_);
-            while (!board_.IsChackMate)
+            GameStart?.Invoke(this, Board);
+            Start = DateTime.Now;
+            gameRepository_.Save(this);
+            while (!Board.IsChackMate)
             {
-                var (move, eval) = board_.Teban ? black_.DecideMove(board_) : white_.DecideMove(board_);
-                board_.DoMove(move);
-                Moved?.Invoke(this, (board_, move, eval));
+                var (move, eval) = Board.Teban ? Black.DecideMove(Board) : White.DecideMove(Board);
+                Board.DoMove(move);
+                Moved?.Invoke(this, (Board, move, eval));
+                gameRepository_.Save(this);
             }
-            var result = board_.Teban ? Result.Lose : Result.Win;
+            var result = Board.Teban ? Result.Lose : Result.Win;
             GameEnd?.Invoke(this, result);
+            End = DateTime.Now;
+            gameRepository_.Save(this);
         }
     }
 }
