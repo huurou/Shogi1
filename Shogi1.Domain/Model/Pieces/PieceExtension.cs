@@ -9,148 +9,175 @@ namespace Shogi1.Domain.Model.Pieces
 {
     internal static class PieceExtension
     {
+        private static bool[] TebanTable { get; } = new bool[(int)PieceLast];
+        private static Piece[] ReverseTebanTable { get; } = new Piece[(int)PieceLast];
+        private static bool[] IsPromotableTable { get; } = new bool[(int)PieceLast];
+        private static bool[] IsPromotedTable { get; } = new bool[(int)PieceLast];
+        private static Piece[] PromoteTable { get; } = new Piece[(int)PieceLast];
+        private static Piece[] UnpromoteTable { get; } = new Piece[(int)PieceLast];
+        private static List<Position>[,] MovableTable { get; } = new List<Position>[(int)PieceLast, BOARD_POW];
+
+        static PieceExtension()
+        {
+            for (var piece = None; piece < PieceLast; piece++)
+            {
+                TebanTable[(int)piece] = piece switch
+                {
+                    KingB or RookB or DragonB or
+                    BishopB or HorseB or GoldB or
+                    SilverB or ProShilverB or KnightB or
+                    ProKnightB or LanceB or ProLanceB or
+                    PawnB or ProPownB => BLACK,
+
+                    KingW or RookW or DragonW or
+                    BishopW or HorseW or GoldW or
+                    ShilverW or ProShilverW or KnightW or
+                    ProKnightW or LanceW or ProLanceW or
+                    PawnW or ProPawnW => WHITE,
+
+                    None => default,
+                    _ => throw new NotSupportedException(),
+                };
+
+                ReverseTebanTable[(int)piece] = piece switch
+                {
+                    KingB => KingW,
+                    RookB => RookW,
+                    DragonB => DragonW,
+                    BishopB => BishopW,
+                    HorseB => HorseW,
+                    GoldB => GoldW,
+                    SilverB => ShilverW,
+                    ProShilverB => ProShilverW,
+                    KnightB => KnightW,
+                    ProKnightB => ProKnightW,
+                    LanceB => LanceW,
+                    ProLanceB => ProLanceW,
+                    PawnB => PawnW,
+                    ProPownB => ProPawnW,
+                    KingW => KingB,
+                    RookW => RookB,
+                    DragonW => DragonB,
+                    BishopW => BishopB,
+                    HorseW => HorseB,
+                    GoldW => GoldB,
+                    ShilverW => SilverB,
+                    ProShilverW => ProShilverB,
+                    KnightW => KnightB,
+                    ProKnightW => ProKnightB,
+                    LanceW => LanceB,
+                    ProLanceW => ProLanceB,
+                    PawnW => PawnB,
+                    ProPawnW => ProPownB,
+                    None => default,
+                    _ => throw new NotSupportedException(),
+                };
+
+                IsPromotableTable[(int)piece] = piece switch
+                {
+                    RookB or BishopB or SilverB or
+                    KnightB or LanceB or PawnB or
+                    RookW or BishopW or ShilverW or
+                    KnightW or LanceW or PawnW => true,
+
+                    KingB or DragonB or HorseB or
+                    GoldB or ProShilverB or ProKnightB or
+                    ProLanceB or ProPownB or KingW or
+                    DragonW or HorseW or GoldW or
+                    ProShilverW or ProKnightW or ProLanceW or
+                    ProPawnW => false,
+
+                    None => default,
+                    _ => throw new NotSupportedException(),
+                };
+
+                IsPromotedTable[(int)piece] = piece switch
+                {
+                    DragonB or HorseB or ProShilverB or
+                    ProKnightB or ProLanceB or ProPownB or
+                    DragonW or HorseW or ProShilverW or
+                    ProKnightW or ProLanceW or ProPawnW => true,
+
+                    KingB or RookB or BishopB or
+                    GoldB or SilverB or KnightB or
+                    LanceB or PawnB or KingW or
+                    RookW or BishopW or GoldW or
+                    ShilverW or KnightW or LanceW or PawnW => false,
+
+                    None => default,
+                    _ => throw new NotSupportedException(),
+                };
+
+                PromoteTable[(int)piece] = piece switch
+                {
+                    RookB => DragonB,
+                    BishopB => HorseB,
+                    SilverB => ProShilverB,
+                    KnightB => ProKnightB,
+                    LanceB => ProLanceB,
+                    PawnB => ProPownB,
+                    RookW => DragonW,
+                    BishopW => HorseW,
+                    ShilverW => ProShilverW,
+                    KnightW => ProKnightW,
+                    LanceW => ProLanceW,
+                    PawnW => ProPawnW,
+
+                    KingB or DragonB or HorseB or
+                    GoldB or ProShilverB or ProKnightB or
+                    ProLanceB or ProPownB or KingW or
+                    DragonW or HorseW or GoldW or
+                    ProShilverW or ProKnightW or ProLanceW or
+                    ProPawnW or None => default,
+                    _ => throw new NotSupportedException(),
+                };
+
+                UnpromoteTable[(int)piece] = piece switch
+                {
+                    RookB or DragonB => RookB,
+                    BishopB or HorseB => BishopB,
+                    GoldB => GoldB,
+                    SilverB or ProShilverB => SilverB,
+                    KnightB or ProKnightB => KnightB,
+                    LanceB or ProLanceB => LanceB,
+                    PawnB or ProPownB => PawnB,
+                    RookW or DragonW => RookW,
+                    BishopW or HorseW => BishopW,
+                    GoldW => GoldW,
+                    ShilverW or ProShilverW => ShilverW,
+                    KnightW or ProKnightW => KnightW,
+                    LanceW or ProLanceW => LanceW,
+                    PawnW or ProPawnW => PawnW,
+                    KingB or KingW or None => default,
+                    _ => throw new NotSupportedException(),
+                };
+
+                for (var pos = 0; pos < BOARD_POW; pos++)
+                {
+                    MovableTable[(int)piece, pos] = piece.Movable_(new(pos));
+                }
+            }
+        }
+
         internal static bool IsEmpty(this Piece piece) => piece == None;
 
         internal static bool IsPiece(this Piece piece) => piece != None;
 
-        internal static bool GetTeban(this Piece piece)
-        {
-            return piece switch
-            {
-                KingB or RookB or DragonB or
-                BishopB or HorseB or GoldB or
-                SilverB or ProShilverB or KnightB or
-                ProKnightB or LanceB or ProLanceB or
-                PawnB or ProPownB => BLACK,
+        internal static bool Teban(this Piece piece) => TebanTable[(int)piece];
 
-                KingW or RookW or DragonW or
-                BishopW or HorseW or GoldW or
-                ShilverW or ProShilverW or KnightW or
-                ProKnightW or LanceW or ProLanceW or
-                PawnW or ProPawnW => WHITE,
+        internal static Piece ReverseTeban(this Piece piece) => ReverseTebanTable[(int)piece];
 
-                None => throw new InvalidOperationException(),
-                _ => throw new NotSupportedException(),
-            };
-        }
+        internal static bool IsPromotable(this Piece piece) => IsPromotableTable[(int)piece];
 
-        internal static Piece ReverseTeban(this Piece piece) => piece switch
-        {
-            KingB => KingW,
-            RookB => RookW,
-            DragonB => DragonW,
-            BishopB => BishopW,
-            HorseB => HorseW,
-            GoldB => GoldW,
-            SilverB => ShilverW,
-            ProShilverB => ProShilverW,
-            KnightB => KnightW,
-            ProKnightB => ProKnightW,
-            LanceB => LanceW,
-            ProLanceB => ProLanceW,
-            PawnB => PawnW,
-            ProPownB => ProPawnW,
-            KingW => KingB,
-            RookW => RookB,
-            DragonW => DragonB,
-            BishopW => BishopB,
-            HorseW => HorseB,
-            GoldW => GoldB,
-            ShilverW => SilverB,
-            ProShilverW => ProShilverB,
-            KnightW => KnightB,
-            ProKnightW => ProKnightB,
-            LanceW => LanceB,
-            ProLanceW => ProLanceB,
-            PawnW => PawnB,
-            ProPawnW => ProPownB,
-            None => throw new InvalidOperationException(),
-            _ => throw new NotSupportedException(),
-        };
+        internal static bool IsPromoted(this Piece piece) => IsPromotedTable[(int)piece];
 
-        internal static bool IsPromotable(this Piece piece)
-        {
-            return piece switch
-            {
-                RookB or BishopB or SilverB or
-                KnightB or LanceB or PawnB or
-                RookW or BishopW or ShilverW or
-                KnightW or LanceW or PawnW => true,
+        internal static Piece Promote(this Piece piece) => PromoteTable[(int)piece];
 
-                KingB or DragonB or HorseB or
-                GoldB or ProShilverB or ProKnightB or
-                ProLanceB or ProPownB or KingW or
-                DragonW or HorseW or GoldW or
-                ProShilverW or ProKnightW or ProLanceW or
-                ProPawnW => false,
+        internal static Piece Unpromote(this Piece piece) => UnpromoteTable[(int)piece];
 
-                None => throw new InvalidOperationException(),
-                _ => throw new NotSupportedException(),
-            };
-        }
+        internal static List<Position> Movable(this Piece piece, Position position) => MovableTable[(int)piece, position];
 
-        internal static bool IsPromoted(this Piece piece) => piece switch
-        {
-            DragonB or HorseB or ProShilverB or
-            ProKnightB or ProLanceB or ProPownB or
-            DragonW or HorseW or ProShilverW or
-            ProKnightW or ProLanceW or ProPawnW => true,
-
-            KingB or RookB or BishopB or
-            GoldB or SilverB or KnightB or
-            LanceB or PawnB or KingW or
-            RookW or BishopW or GoldW or
-            ShilverW or KnightW or LanceW or PawnW => false,
-
-            None => throw new InvalidOperationException(),
-            _ => throw new NotSupportedException(),
-        };
-
-        internal static Piece Promote(this Piece piece) => piece switch
-        {
-            RookB => DragonB,
-            BishopB => HorseB,
-            SilverB => ProShilverB,
-            KnightB => ProKnightB,
-            LanceB => ProLanceB,
-            PawnB => ProPownB,
-            RookW => DragonW,
-            BishopW => HorseW,
-            ShilverW => ProShilverW,
-            KnightW => ProKnightW,
-            LanceW => ProLanceW,
-            PawnW => ProPawnW,
-
-            KingB or DragonB or HorseB or
-            GoldB or ProShilverB or ProKnightB or
-            ProLanceB or ProPownB or KingW or
-            DragonW or HorseW or GoldW or
-            ProShilverW or ProKnightW or ProLanceW or
-            ProPawnW or None => throw new InvalidOperationException(),
-            _ => throw new NotSupportedException(),
-        };
-
-        internal static Piece Unpromote(this Piece piece) => piece switch
-        {
-            RookB or DragonB => RookB,
-            BishopB or HorseB => BishopB,
-            GoldB => GoldB,
-            SilverB or ProShilverB => SilverB,
-            KnightB or ProKnightB => KnightB,
-            LanceB or ProLanceB => LanceB,
-            PawnB or ProPownB => PawnB,
-            RookW or DragonW => RookW,
-            BishopW or HorseW => BishopW,
-            GoldW => GoldW,
-            ShilverW or ProShilverW => ShilverW,
-            KnightW or ProKnightW => KnightW,
-            LanceW or ProLanceW => LanceW,
-            PawnW or ProPawnW => PawnW,
-            KingB or KingW or None => throw new InvalidOperationException(),
-            _ => throw new NotSupportedException(),
-        };
-
-        internal static List<Position> GetPositions(this Piece piece, Position position)
+        private static List<Position> Movable_(this Piece piece, Position position)
         {
             switch (piece)
             {
@@ -418,8 +445,7 @@ namespace Shogi1.Domain.Model.Pieces
                         position.Left(),
                     }.Where(x => x.IsOnBoard).ToList();
 
-                case None:
-                    throw new InvalidOperationException();
+                case None: return new();
                 default: break;
             }
             throw new NotSupportedException();
@@ -464,5 +490,25 @@ namespace Shogi1.Domain.Model.Pieces
                 while ((position = position.UpLeft()).IsOnBoard) yield return position;
             }
         }
+
+        internal static string ToLetters(this Piece piece) => piece switch
+        {
+            None => "空",
+            KingB or KingW => "玉",
+            RookB or RookW => "飛",
+            DragonB or DragonW => "龍",
+            BishopB or BishopW => "角",
+            HorseB or HorseW => "馬",
+            GoldB or GoldW => "金",
+            SilverB or ShilverW => "銀",
+            ProShilverB or ProShilverW => "成銀",
+            KnightB or KnightW => "桂",
+            ProKnightB or ProKnightW => "成桂",
+            LanceB or LanceW => "香",
+            ProLanceB or ProLanceW => "成香",
+            PawnB or PawnW => "歩",
+            ProPownB or ProPawnW => "と金",
+            _ => throw new NotImplementedException(),
+        };
     }
 }

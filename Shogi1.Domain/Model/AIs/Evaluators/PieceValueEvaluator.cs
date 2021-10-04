@@ -24,6 +24,6 @@ namespace Shogi1.Domain.Model.AIs.Evaluators
         private int PieceValue(Board board)
             => board.Pieces.Where(x => x.IsPiece()).Sum(x => pieceValues_[(int)x]) * 920 / 1024
                 + board.HandsBlack.Concat(board.HandsWhite).Where(x => x.IsPiece()).Sum(x => pieceValues_[(int)x])
-                + random_.Next(51) - 25;
+                + random_.Next(21) - 10;
     }
 }

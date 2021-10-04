@@ -118,5 +118,10 @@
         /// と金(後手)
         /// </summary>
         ProPawnW,
+
+        /// <summary>
+        /// for用
+        /// </summary>
+        PieceLast,
     }
 }

@@ -12,6 +12,10 @@
         /// </summary>
         internal const bool WHITE = false;
 
+        internal const int BOARD_SIZE = 9;
+
+        internal const int BOARD_POW = BOARD_SIZE * BOARD_SIZE;
+
         /// <summary>
         /// 先手玉が詰んでいるときの評価値
         /// </summary>

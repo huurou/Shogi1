@@ -50,13 +50,13 @@ namespace Shogi1.Domain.Model.Boards
         internal Board() => Pieces = new Piece[]
         {
             LanceW, KnightW, ShilverW, GoldW, KingW, GoldW, ShilverW, KnightW, LanceW,
-             None, RookW,  None,  None,  None,  None,  None, BishopW,  None,
+            None, RookW, None, None, None, None, None, BishopW, None,
             PawnW, PawnW, PawnW, PawnW, PawnW, PawnW, PawnW, PawnW, PawnW,
-             None,  None,  None,  None,  None,  None,  None,  None,  None,
-             None,  None,  None,  None,  None,  None,  None,  None,  None,
-             None,  None,  None,  None,  None,  None,  None,  None,  None,
+            None, None, None, None, None, None, None, None, None,
+            None, None, None, None, None, None, None, None, None,
+            None, None, None, None, None, None, None, None, None,
             PawnB, PawnB, PawnB, PawnB, PawnB, PawnB, PawnB, PawnB, PawnB,
-             None, BishopB,  None,  None,  None,  None,  None, RookB,  None,
+            None, BishopB, None, None, None, None, None, RookB, None,
             LanceB, KnightB, SilverB, GoldB, KingB, GoldB, SilverB, KnightB, LanceB,
         };
 
@@ -80,11 +80,11 @@ namespace Shogi1.Domain.Model.Boards
                 {
                     var from = new Position(x, y);
                     var piece = Pieces[from];
-                    if (!piece.IsPiece() || piece.GetTeban() != Teban) continue;
-                    foreach (var to in piece.GetPositions(from))
+                    if (!piece.IsPiece() || piece.Teban() != Teban) continue;
+                    foreach (var to in piece.Movable(from))
                     {
                         // 自駒は捕獲できない
-                        if (Pieces[to].IsPiece() && Pieces[to].GetTeban() == Teban) continue;
+                        if (Pieces[to].IsPiece() && Pieces[to].Teban() == Teban) continue;
                         // 飛龍角馬香は駒を飛び越えて移動できない
                         if (piece is RookB or RookW or DragonB or DragonW &&
                             (from.X == to.X || from.Y == to.Y) ||
@@ -127,7 +127,7 @@ namespace Shogi1.Domain.Model.Boards
             foreach (var hand in (Teban ? HandsBlack : HandsWhite).Distinct())
             {
                 // 以下の駒は手駒にあってはいけない
-                if (!hand.IsPiece() || hand.GetTeban() != Teban ||
+                if (!hand.IsPiece() || hand.Teban() != Teban ||
                     hand is KingB or KingW or DragonW or
                     DragonB or HorseB or HorseW or
                     ProShilverB or ProShilverW or ProKnightB or

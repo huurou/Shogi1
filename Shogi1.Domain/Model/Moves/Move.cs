@@ -35,12 +35,12 @@ namespace Shogi1.Domain.Model.Moves
             sb.Append(' ');
             sb.Append(To.ToString());
             sb.Append(' ');
-            sb.Append(Piece);
+            sb.Append(Piece.ToLetters());
             sb.Append(Promoted ? "成" : "");
             if (Captured)
             {
                 sb.Append(" captured:");
-                sb.Append(PieceCaptured);
+                sb.Append(PieceCaptured.ToLetters());
             }
 
             return sb.ToString();

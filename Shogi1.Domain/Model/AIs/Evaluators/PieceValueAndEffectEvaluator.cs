@@ -35,20 +35,20 @@ namespace Shogi1.Domain.Model.AIs.Evaluators
 
         // 利きを評価するテーブル
         //    [自玉の位置][対象となる升][利きの数(0～3)]
-        private readonly int[,,] ourEffectTable_ = new int[81, 81, EFFECT_TRESHOLD + 1];
+        private readonly int[,,] ourEffectTable_ = new int[BOARD_POW, BOARD_POW, EFFECT_TRESHOLD + 1];
 
         //    [相手玉の位置][対象となる升][利きの数(0～3)]
-        private readonly int[,,] theirEffectTable_ = new int[81, 81, EFFECT_TRESHOLD + 1];
+        private readonly int[,,] theirEffectTable_ = new int[BOARD_POW, BOARD_POW, EFFECT_TRESHOLD + 1];
 
         // 利きの価値を合算した値を求めるテーブル
         // [先手玉,後手玉,対象升,先手の利き,後手の利き]
-        private readonly int[,,,,] effectTable_ = new int[81, 81, 81, EFFECT_TRESHOLD + 1, EFFECT_TRESHOLD + 1];
+        private readonly int[,,,,] effectTable_ = new int[BOARD_POW, BOARD_POW, BOARD_POW, EFFECT_TRESHOLD + 1, EFFECT_TRESHOLD + 1];
 
         internal PieceValueAndEffectEvaluator()
         {
-            for (var sq1 = 0; sq1 < 81; sq1++)
+            for (var sq1 = 0; sq1 < BOARD_POW; sq1++)
             {
-                for (var sq2 = 0; sq2 < 81; sq2++)
+                for (var sq2 = 0; sq2 < BOARD_POW; sq2++)
                 {
                     for (var m = 0; m < EFFECT_TRESHOLD + 1; m++)
                     {
@@ -60,11 +60,11 @@ namespace Shogi1.Domain.Model.AIs.Evaluators
                 }
             }
 
-            for (var kb = 0; kb < 81; kb++)
+            for (var kb = 0; kb < BOARD_POW; kb++)
             {
-                for (var kw = 0; kw < 81; kw++)
+                for (var kw = 0; kw < BOARD_POW; kw++)
                 {
-                    for (var pos = 0; pos < 81; pos++)
+                    for (var pos = 0; pos < BOARD_POW; pos++)
                     {
                         for (var eb = 0; eb < EFFECT_TRESHOLD + 1; eb++)
                         {
@@ -90,9 +90,9 @@ namespace Shogi1.Domain.Model.AIs.Evaluators
         private int PieceAndEffectValue(Board board)
         {
             var res = 0;
-            for (var y = 1; y <= 9; y++)
+            for (var y = 1; y <= BOARD_SIZE; y++)
             {
-                for (var x = 1; x <= 9; x++)
+                for (var x = 1; x <= BOARD_SIZE; x++)
                 {
                     var pos = new Position(x, y);
 
@@ -109,7 +109,7 @@ namespace Shogi1.Domain.Model.AIs.Evaluators
                 }
             }
             return res + board.HandsBlack.Concat(board.HandsWhite).Where(x => x.IsPiece()).Sum(x => pieceValues_[(int)x])
-                + random_.Next(51) - 25;
+                + random_.Next(21) - 10;
         }
 
         /// <summary>

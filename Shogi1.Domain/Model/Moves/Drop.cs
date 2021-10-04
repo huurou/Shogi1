@@ -20,7 +20,7 @@ namespace Shogi1.Domain.Model.Moves
             sb.Append(' ');
             sb.Append(To.ToString());
             sb.Append(' ');
-            sb.Append(Piece);
+            sb.Append(Piece.ToLetters());
             sb.Append('打');
 
             return sb.ToString();
