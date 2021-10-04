@@ -78,7 +78,7 @@ namespace Shogi1.Application
                     var pos = new Domain.Model.Boards.Position(x, y);
                     var piece = pieces[pos];
                     if (piece.IsEmpty()) continue;
-                    if (piece.GetTeban()) bb[pos] = ToPiece(piece);
+                    if (piece.Teban()) bb[pos] = ToPiece(piece);
                     else wb[pos] = ToPiece(piece);
                 }
             }

@@ -109,7 +109,7 @@ namespace Shogi1.Domain.Model.AIs.Evaluators
                 }
             }
             return res + board.HandsBlack.Concat(board.HandsWhite).Where(x => x.IsPiece()).Sum(x => pieceValues_[(int)x])
-                + random_.Next(21) - 10;
+                + random_.Next(101) - 50;
         }
 
         /// <summary>

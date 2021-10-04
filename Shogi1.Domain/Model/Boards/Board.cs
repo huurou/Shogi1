@@ -1,5 +1,6 @@
 ﻿using Shogi1.Domain.Model.Moves;
 using Shogi1.Domain.Model.Pieces;
+using Shogi1.Domain.Model.TTs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,28 +43,42 @@ namespace Shogi1.Domain.Model.Boards
         /// </summary>
         internal int Turns { get; private set; }
 
+        internal ulong Hash { get; set; }
+
         internal bool IsChackMate => GetLegalMoves().Count == 0;
 
         /// <summary>
         /// 平手初期局面
         /// </summary>
-        internal Board() => Pieces = new Piece[]
+        internal Board()
         {
-            LanceW, KnightW, ShilverW, GoldW, KingW, GoldW, ShilverW, KnightW, LanceW,
-            None, RookW, None, None, None, None, None, BishopW, None,
-            PawnW, PawnW, PawnW, PawnW, PawnW, PawnW, PawnW, PawnW, PawnW,
-            None, None, None, None, None, None, None, None, None,
-            None, None, None, None, None, None, None, None, None,
-            None, None, None, None, None, None, None, None, None,
-            PawnB, PawnB, PawnB, PawnB, PawnB, PawnB, PawnB, PawnB, PawnB,
-            None, BishopB, None, None, None, None, None, RookB, None,
-            LanceB, KnightB, SilverB, GoldB, KingB, GoldB, SilverB, KnightB, LanceB,
-        };
+            Pieces = new Piece[]
+            {
+                LanceW, KnightW, ShilverW, GoldW, KingW, GoldW, ShilverW, KnightW, LanceW,
+                None, RookW, None, None, None, None, None, BishopW, None,
+                PawnW, PawnW, PawnW, PawnW, PawnW, PawnW, PawnW, PawnW, PawnW,
+                None, None, None, None, None, None, None, None, None,
+                None, None, None, None, None, None, None, None, None,
+                None, None, None, None, None, None, None, None, None,
+                PawnB, PawnB, PawnB, PawnB, PawnB, PawnB, PawnB, PawnB, PawnB,
+                None, BishopB, None, None, None, None, None, RookB, None,
+                LanceB, KnightB, SilverB, GoldB, KingB, GoldB, SilverB, KnightB, LanceB,
+            };
+            for (var sq = 0; sq < BOARD_POW; sq++)
+            {
+                var piece = Pieces[sq];
+                Hash += Zobrist.SquarePiece[sq, (int)piece];
+            }
+        }
 
         /// <summary>
         /// 手番を入れ替える
         /// </summary>
-        internal void ChangeTeban() => Teban = !Teban;
+        internal void ChangeTeban()
+        {
+            Teban = !Teban;
+            Hash ^= 1;
+        }
 
         /// <summary>
         /// 盤外への移動と自駒を取る手、行き場のない場所への着手、二歩を除いたもの
@@ -173,14 +188,7 @@ namespace Shogi1.Domain.Model.Boards
         internal List<MoveBase> GetLegalMoves()
         {
             if (legalMoves_ is not null) return legalMoves_;
-            var lms = GetPseudoMoves().Where(x => IsLegalMove(x)).ToList();
-            var moves = lms.OfType<Move>();
-            var drops = lms.OfType<Drop>();
-            var cps = moves.Where(x => x.Captured && x.Promoted).OfType<MoveBase>();
-            var cs = moves.Where(x => x.Captured && !x.Promoted).OfType<MoveBase>();
-            var ps = moves.Where(x => !x.Captured && x.Promoted).OfType<MoveBase>();
-            var others = moves.Where(x => !x.Captured && !x.Promoted).OfType<MoveBase>();
-            legalMoves_ = cps.Concat(cs).Concat(ps).Concat(drops).Concat(others).ToList();
+            legalMoves_ = GetPseudoMoves().Where(x => IsLegalMove(x)).ToList();
             return legalMoves_;
         }
 
@@ -198,14 +206,24 @@ namespace Shogi1.Domain.Model.Boards
             var hands = moveBase.Teban ? HandsBlack : HandsWhite;
             if (moveBase is Move move)
             {
-                if (move.Captured) hands.Add(move.PieceCaptured.Unpromote().ReverseTeban());
+                if (move.Captured)
+                {
+                    var cap = move.PieceCaptured.Unpromote().ReverseTeban();
+                    hands.Add(cap);
+                    Hash -= Zobrist.SquarePiece[move.To, (int)move.PieceCaptured];
+                    Hash += Zobrist.Hand[move.Teban ? 0 : 1, (int)cap];
+                }
                 Pieces[move.To] = move.Promoted ? move.Piece.Promote() : move.Piece;
                 Pieces[move.From] = None;
+                Hash -= Zobrist.SquarePiece[move.From, (int)move.Piece];
+                Hash += Zobrist.SquarePiece[move.To, (int)move.Piece];
             }
             else if (moveBase is Drop drop)
             {
                 hands.Remove(drop.Piece);
                 Pieces[drop.To] = drop.Piece;
+                Hash -= Zobrist.Hand[drop.Teban ? 0 : 1, (int)drop.Piece];
+                Hash += Zobrist.SquarePiece[drop.To, (int)drop.Piece];
             }
             ChangeTeban();
             Turns++;
@@ -222,14 +240,24 @@ namespace Shogi1.Domain.Model.Boards
             var hands = moveBase.Teban ? HandsBlack : HandsWhite;
             if (moveBase is Move move)
             {
-                if (move.Captured) hands.Remove(move.PieceCaptured.Unpromote().ReverseTeban());
+                var cap = move.PieceCaptured.Unpromote().ReverseTeban();
+                if (move.Captured)
+                {
+                    hands.Remove(cap);
+                    Hash += Zobrist.SquarePiece[move.To, (int)move.PieceCaptured];
+                    Hash -= Zobrist.Hand[move.Teban ? 0 : 1, (int)cap];
+                }
                 Pieces[move.To] = move.PieceCaptured;
                 Pieces[move.From] = move.Promoted ? move.Piece.Unpromote() : move.Piece;
+                Hash += Zobrist.SquarePiece[move.From, (int)move.Piece];
+                Hash -= Zobrist.SquarePiece[move.To, (int)move.Piece];
             }
             else if (moveBase is Drop drop)
             {
                 hands.Add(drop.Piece);
                 Pieces[drop.To] = None;
+                Hash += Zobrist.Hand[drop.Teban ? 0 : 1, (int)drop.Piece];
+                Hash -= Zobrist.SquarePiece[drop.To, (int)drop.Piece];
             }
             ChangeTeban();
             Turns--;
