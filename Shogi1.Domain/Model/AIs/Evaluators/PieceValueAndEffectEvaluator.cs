@@ -99,7 +99,7 @@ namespace Shogi1.Domain.Model.AIs.Evaluators
                     var (eb, ew) = board.Effects(pos);
                     eb = Math.Min(eb, EFFECT_TRESHOLD);
                     ew = Math.Min(ew, EFFECT_TRESHOLD);
-                    var (kb, kw) = (new Position(Array.IndexOf(board.Pieces, 王B)), new Position(Array.IndexOf(board.Pieces, 王W)));
+                    var (kb, kw) = (new Position(Array.IndexOf(board.Pieces, KingB)), new Position(Array.IndexOf(board.Pieces, KingW)));
                     res += effectTable_[kb, kw, pos, eb, ew];
 
                     var piece = board.Pieces[pos];

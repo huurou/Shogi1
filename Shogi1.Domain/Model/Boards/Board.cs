@@ -49,15 +49,15 @@ namespace Shogi1.Domain.Model.Boards
         /// </summary>
         internal Board() => Pieces = new Piece[]
         {
-            香W, 桂W, 銀W, 金W, 王W, 金W, 銀W, 桂W, 香W,
-             空, 飛W,  空,  空,  空,  空,  空, 角W,  空,
-            歩W, 歩W, 歩W, 歩W, 歩W, 歩W, 歩W, 歩W, 歩W,
-             空,  空,  空,  空,  空,  空,  空,  空,  空,
-             空,  空,  空,  空,  空,  空,  空,  空,  空,
-             空,  空,  空,  空,  空,  空,  空,  空,  空,
-            歩B, 歩B, 歩B, 歩B, 歩B, 歩B, 歩B, 歩B, 歩B,
-             空, 角B,  空,  空,  空,  空,  空, 飛B,  空,
-            香B, 桂B, 銀B, 金B, 王B, 金B, 銀B, 桂B, 香B,
+            LanceW, KnightW, ShilverW, GoldW, KingW, GoldW, ShilverW, KnightW, LanceW,
+             None, RookW,  None,  None,  None,  None,  None, BishopW,  None,
+            PawnW, PawnW, PawnW, PawnW, PawnW, PawnW, PawnW, PawnW, PawnW,
+             None,  None,  None,  None,  None,  None,  None,  None,  None,
+             None,  None,  None,  None,  None,  None,  None,  None,  None,
+             None,  None,  None,  None,  None,  None,  None,  None,  None,
+            PawnB, PawnB, PawnB, PawnB, PawnB, PawnB, PawnB, PawnB, PawnB,
+             None, BishopB,  None,  None,  None,  None,  None, RookB,  None,
+            LanceB, KnightB, SilverB, GoldB, KingB, GoldB, SilverB, KnightB, LanceB,
         };
 
         /// <summary>
@@ -86,25 +86,25 @@ namespace Shogi1.Domain.Model.Boards
                         // 自駒は捕獲できない
                         if (Pieces[to].IsPiece() && Pieces[to].GetTeban() == Teban) continue;
                         // 飛龍角馬香は駒を飛び越えて移動できない
-                        if (piece is 飛B or 飛W or 龍王B or 龍王W &&
+                        if (piece is RookB or RookW or DragonB or DragonW &&
                             (from.X == to.X || from.Y == to.Y) ||
-                            piece is 角B or 角W or 龍馬B or 龍馬W &&
+                            piece is BishopB or BishopW or HorseB or HorseW &&
                             (from.X + from.Y == to.X + to.Y || from.X - from.Y == to.X - to.Y) ||
-                            piece is 香B && from.X == to.X && from.Y > to.Y ||
-                            piece is 香W && from.X == to.X && from.Y < to.Y)
+                            piece is LanceB && from.X == to.X && from.Y > to.Y ||
+                            piece is LanceW && from.X == to.X && from.Y < to.Y)
                         {
                             var range = Position.Range(from, to);
-                            if (range.Any() && !range.All(x => Pieces[x] == 空)) continue;
+                            if (range.Any() && !range.All(x => Pieces[x] == None)) continue;
                         }
                         // 不成
                         // 行き場のない場所への移動は不可
-                        if (!(piece is 歩B or 香B or 桂B && to.Y == 1 ||
-                            piece is 桂B && to.Y == 2 ||
-                            piece is 桂W && to.Y == 8 ||
-                            piece is 歩W or 香W or 桂W && to.Y == 9 ||
+                        if (!(piece is PawnB or LanceB or KnightB && to.Y == 1 ||
+                            piece is KnightB && to.Y == 2 ||
+                            piece is KnightW && to.Y == 8 ||
+                            piece is PawnW or LanceW or KnightW && to.Y == 9 ||
                             // 飛角歩は成らない手は考えない
-                            piece is 飛B or 角B or 歩B && (from.Y is >= 1 and <= 3 || to.Y is >= 1 and <= 3) ||
-                            piece is 飛W or 角W or 歩W && (from.Y is >= 7 and <= 9 || to.Y is >= 7 and <= 9)))
+                            piece is RookB or BishopB or PawnB && (from.Y is >= 1 and <= 3 || to.Y is >= 1 and <= 3) ||
+                            piece is RookW or BishopW or PawnW && (from.Y is >= 7 and <= 9 || to.Y is >= 7 and <= 9)))
                         {
                             moves.Add(Pieces[to].IsPiece()
                             ? new Move(Teban, piece, to, from, captured: true, pieceCaptured: Pieces[to])
@@ -128,25 +128,25 @@ namespace Shogi1.Domain.Model.Boards
             {
                 // 以下の駒は手駒にあってはいけない
                 if (!hand.IsPiece() || hand.GetTeban() != Teban ||
-                    hand is 王B or 王W or 龍王W or
-                    龍王B or 龍馬B or 龍馬W or
-                    成銀B or 成銀W or 成桂B or
-                    成桂W or 成香B or 成香W or
-                    と金B or と金W) throw new InvalidOperationException();
+                    hand is KingB or KingW or DragonW or
+                    DragonB or HorseB or HorseW or
+                    ProShilverB or ProShilverW or ProKnightB or
+                    ProKnightW or ProLanceB or ProLanceW or
+                    ProPownB or ProPawnW) throw new InvalidOperationException();
                 for (var y = 1; y <= 9; y++)
                 {
                     // 行きどころのない駒打ちは不可
-                    if (hand is 歩B or 香B or 桂B && y == 1) continue;
-                    if (hand is 桂B && y == 2) continue;
-                    if (hand is 桂W && y == 8) continue;
-                    if (hand is 歩W or 香W or 桂W && y == 9) continue;
+                    if (hand is PawnB or LanceB or KnightB && y == 1) continue;
+                    if (hand is KnightB && y == 2) continue;
+                    if (hand is KnightW && y == 8) continue;
+                    if (hand is PawnW or LanceW or KnightW && y == 9) continue;
                     for (var x = 1; x <= 9; x++)
                     {
                         // 空の場所にしか打てない
                         if (Pieces[new Position(x, y)].IsPiece()) continue;
                         // 二歩は不可
-                        if (hand is 歩B && ExistsOnLine(歩B, x)) continue;
-                        if (hand is 歩W && ExistsOnLine(歩W, x)) continue;
+                        if (hand is PawnB && ExistsOnLine(PawnB, x)) continue;
+                        if (hand is PawnW && ExistsOnLine(PawnW, x)) continue;
                         moves.Add(new Drop(Teban, hand, new(x, y)));
                     }
                 }
@@ -200,7 +200,7 @@ namespace Shogi1.Domain.Model.Boards
             {
                 if (move.Captured) hands.Add(move.PieceCaptured.Unpromote().ReverseTeban());
                 Pieces[move.To] = move.Promoted ? move.Piece.Promote() : move.Piece;
-                Pieces[move.From] = 空;
+                Pieces[move.From] = None;
             }
             else if (moveBase is Drop drop)
             {
@@ -229,7 +229,7 @@ namespace Shogi1.Domain.Model.Boards
             else if (moveBase is Drop drop)
             {
                 hands.Add(drop.Piece);
-                Pieces[drop.To] = 空;
+                Pieces[drop.To] = None;
             }
             ChangeTeban();
             Turns--;
@@ -244,23 +244,23 @@ namespace Shogi1.Domain.Model.Boards
         {
             if (teban)
             {
-                var kingPos = new Position(Array.IndexOf(Pieces, 王B));
+                var kingPos = new Position(Array.IndexOf(Pieces, KingB));
 
                 // 上
                 var position = kingPos.Up();
                 if (position.IsOnBoard)
                 {
                     var piece = Pieces[position];
-                    if (piece is 王W or 飛W or 龍王W or
-                        龍馬W or 金W or 銀W or
-                        成銀W or 成桂W or 香W or
-                        成香W or 歩W or と金W) return true;
+                    if (piece is KingW or RookW or DragonW or
+                        HorseW or GoldW or ShilverW or
+                        ProShilverW or ProKnightW or LanceW or
+                        ProLanceW or PawnW or ProPawnW) return true;
 
                     while (position.IsOnBoard)
                     {
                         piece = Pieces[position];
                         if (piece.IsEmpty()) position = position.Up();
-                        else if (piece is 飛W or 龍王W or 香W) return true;
+                        else if (piece is RookW or DragonW or LanceW) return true;
                         else break;
                     }
                 }
@@ -270,16 +270,16 @@ namespace Shogi1.Domain.Model.Boards
                 if (position.IsOnBoard)
                 {
                     var piece = Pieces[position];
-                    if (piece is 王W or 龍王W or 角W or
-                        龍馬W or 金W or 銀W or
-                        成銀W or 成桂W or 成香W or
-                        と金W) return true;
+                    if (piece is KingW or DragonW or BishopW or
+                        HorseW or GoldW or ShilverW or
+                        ProShilverW or ProKnightW or ProLanceW or
+                        ProPawnW) return true;
 
                     while (position.IsOnBoard)
                     {
                         piece = Pieces[position];
                         if (piece.IsEmpty()) position = position.UpRight();
-                        else if (piece is 角W or 龍馬W) return true;
+                        else if (piece is BishopW or HorseW) return true;
                         else break;
                     }
                 }
@@ -289,15 +289,15 @@ namespace Shogi1.Domain.Model.Boards
                 if (position.IsOnBoard)
                 {
                     var piece = Pieces[position];
-                    if (piece is 王W or 飛W or 龍王W or
-                        龍馬W or 金W or 成銀W or
-                        成桂W or 成香W or と金W) return true;
+                    if (piece is KingW or RookW or DragonW or
+                        HorseW or GoldW or ProShilverW or
+                        ProKnightW or ProLanceW or ProPawnW) return true;
 
                     while (position.IsOnBoard)
                     {
                         piece = Pieces[position];
                         if (piece.IsEmpty()) position = position.Right();
-                        else if (piece is 飛W or 龍王W) return true;
+                        else if (piece is RookW or DragonW) return true;
                         else break;
                     }
                 }
@@ -307,14 +307,14 @@ namespace Shogi1.Domain.Model.Boards
                 if (position.IsOnBoard)
                 {
                     var piece = Pieces[position];
-                    if (piece is 王W or 龍王W or 角W or
-                        龍馬W or 銀W) return true;
+                    if (piece is KingW or DragonW or BishopW or
+                        HorseW or ShilverW) return true;
 
                     while (position.IsOnBoard)
                     {
                         piece = Pieces[position];
                         if (piece.IsEmpty()) position = position.DownRight();
-                        else if (piece is 角W or 龍馬W) return true;
+                        else if (piece is BishopW or HorseW) return true;
                         else break;
                     }
                 }
@@ -324,15 +324,15 @@ namespace Shogi1.Domain.Model.Boards
                 if (position.IsOnBoard)
                 {
                     var piece = Pieces[position];
-                    if (piece is 王W or 飛W or 龍王W or
-                        龍馬W or 金W or 成銀W or
-                        成桂W or 成香W or と金W) return true;
+                    if (piece is KingW or RookW or DragonW or
+                        HorseW or GoldW or ProShilverW or
+                        ProKnightW or ProLanceW or ProPawnW) return true;
 
                     while (position.IsOnBoard)
                     {
                         piece = Pieces[position];
                         if (piece.IsEmpty()) position = position.Down();
-                        else if (piece is 飛W or 龍王W) return true;
+                        else if (piece is RookW or DragonW) return true;
                         else break;
                     }
                 }
@@ -342,14 +342,14 @@ namespace Shogi1.Domain.Model.Boards
                 if (position.IsOnBoard)
                 {
                     var piece = Pieces[position];
-                    if (piece is 王W or 龍王W or 角W or
-                        龍馬W or 銀W) return true;
+                    if (piece is KingW or DragonW or BishopW or
+                        HorseW or ShilverW) return true;
 
                     while (position.IsOnBoard)
                     {
                         piece = Pieces[position];
                         if (piece.IsEmpty()) position = position.DownLeft();
-                        else if (piece is 角W or 龍馬W) return true;
+                        else if (piece is BishopW or HorseW) return true;
                         else break;
                     }
                 }
@@ -359,15 +359,15 @@ namespace Shogi1.Domain.Model.Boards
                 if (position.IsOnBoard)
                 {
                     var piece = Pieces[position];
-                    if (piece is 王W or 飛W or 龍王W or
-                        龍馬W or 金W or 成銀W or
-                        成桂W or 成香W or と金W) return true;
+                    if (piece is KingW or RookW or DragonW or
+                        HorseW or GoldW or ProShilverW or
+                        ProKnightW or ProLanceW or ProPawnW) return true;
 
                     while (position.IsOnBoard)
                     {
                         piece = Pieces[position];
                         if (piece.IsEmpty()) position = position.Left();
-                        else if (piece is 飛W or 龍王W) return true;
+                        else if (piece is RookW or DragonW) return true;
                         else break;
                     }
                 }
@@ -377,41 +377,41 @@ namespace Shogi1.Domain.Model.Boards
                 if (position.IsOnBoard)
                 {
                     var piece = Pieces[position];
-                    if (piece is 王W or 龍王W or 角W or
-                        龍馬W or 金W or 銀W or
-                        成銀W or 成桂W or 成香W or
-                        と金W) return true;
+                    if (piece is KingW or DragonW or BishopW or
+                        HorseW or GoldW or ShilverW or
+                        ProShilverW or ProKnightW or ProLanceW or
+                        ProPawnW) return true;
 
                     while (position.IsOnBoard)
                     {
                         piece = Pieces[position];
                         if (piece.IsEmpty()) position = position.UpLeft();
-                        else if (piece is 角W or 龍馬W) return true;
+                        else if (piece is BishopW or HorseW) return true;
                         else break;
                     }
                 }
 
                 //桂馬
-                if (new Position[] { kingPos.JumpUpLeft(), kingPos.JumpUpRight() }.Any(x => x.IsOnBoard && Pieces[x] == 桂W)) return true;
+                if (new Position[] { kingPos.JumpUpLeft(), kingPos.JumpUpRight() }.Any(x => x.IsOnBoard && Pieces[x] == KnightW)) return true;
             }
             else
             {
-                var kingPos = new Position(Array.IndexOf(Pieces, 王W));
+                var kingPos = new Position(Array.IndexOf(Pieces, KingW));
 
                 // 上
                 var position = kingPos.Up();
                 if (position.IsOnBoard)
                 {
                     var piece = Pieces[position];
-                    if (piece is 王B or 飛B or 龍王B or
-                        龍馬B or 金B or 成銀B or
-                        成桂B or 成香B or と金B) return true;
+                    if (piece is KingB or RookB or DragonB or
+                        HorseB or GoldB or ProShilverB or
+                        ProKnightB or ProLanceB or ProPownB) return true;
 
                     while (position.IsOnBoard)
                     {
                         piece = Pieces[position];
                         if (piece.IsEmpty()) position = position.Up();
-                        else if (piece is 飛B or 龍王B) return true;
+                        else if (piece is RookB or DragonB) return true;
                         else break;
                     }
                 }
@@ -421,14 +421,14 @@ namespace Shogi1.Domain.Model.Boards
                 if (position.IsOnBoard)
                 {
                     var piece = Pieces[position];
-                    if (piece is 王B or 龍王B or 角B or
-                        龍馬B or 銀B) return true;
+                    if (piece is KingB or DragonB or BishopB or
+                        HorseB or SilverB) return true;
 
                     while (position.IsOnBoard)
                     {
                         piece = Pieces[position];
                         if (piece.IsEmpty()) position = position.UpRight();
-                        else if (piece is 角B or 龍馬B) return true;
+                        else if (piece is BishopB or HorseB) return true;
                         else break;
                     }
                 }
@@ -438,15 +438,15 @@ namespace Shogi1.Domain.Model.Boards
                 if (position.IsOnBoard)
                 {
                     var piece = Pieces[position];
-                    if (piece is 王B or 飛B or 龍王B or
-                        龍馬B or 金B or 成銀B or
-                        成桂B or 成香B or と金B) return true;
+                    if (piece is KingB or RookB or DragonB or
+                        HorseB or GoldB or ProShilverB or
+                        ProKnightB or ProLanceB or ProPownB) return true;
 
                     while (position.IsOnBoard)
                     {
                         piece = Pieces[position];
                         if (piece.IsEmpty()) position = position.Right();
-                        else if (piece is 飛B or 龍王B) return true;
+                        else if (piece is RookB or DragonB) return true;
                         else break;
                     }
                 }
@@ -456,16 +456,16 @@ namespace Shogi1.Domain.Model.Boards
                 if (position.IsOnBoard)
                 {
                     var piece = Pieces[position];
-                    if (piece is 王B or 龍王B or 角B or
-                        龍馬B or 金B or 銀B or
-                        成銀B or 成桂B or 成香B or
-                        と金B) return true;
+                    if (piece is KingB or DragonB or BishopB or
+                        HorseB or GoldB or SilverB or
+                        ProShilverB or ProKnightB or ProLanceB or
+                        ProPownB) return true;
 
                     while (position.IsOnBoard)
                     {
                         piece = Pieces[position];
                         if (piece.IsEmpty()) position = position.DownRight();
-                        else if (piece is 角B or 龍馬B) return true;
+                        else if (piece is BishopB or HorseB) return true;
                         else break;
                     }
                 }
@@ -475,16 +475,16 @@ namespace Shogi1.Domain.Model.Boards
                 if (position.IsOnBoard)
                 {
                     var piece = Pieces[position];
-                    if (piece is 王B or 飛B or 龍王B or
-                        龍馬B or 金B or 銀B or
-                        成銀B or 成桂B or 香B or
-                        成香B or 歩B or と金B) return true;
+                    if (piece is KingB or RookB or DragonB or
+                        HorseB or GoldB or SilverB or
+                        ProShilverB or ProKnightB or LanceB or
+                        ProLanceB or PawnB or ProPownB) return true;
 
                     while (position.IsOnBoard)
                     {
                         piece = Pieces[position];
                         if (piece.IsEmpty()) position = position.Down();
-                        else if (piece is 飛B or 龍王B or 香B) return true;
+                        else if (piece is RookB or DragonB or LanceB) return true;
                         else break;
                     }
                 }
@@ -494,16 +494,16 @@ namespace Shogi1.Domain.Model.Boards
                 if (position.IsOnBoard)
                 {
                     var piece = Pieces[position];
-                    if (piece is 王B or 龍王B or 角B or
-                        龍馬B or 金B or 銀B or
-                        成銀B or 成桂B or 成香B or
-                        と金B) return true;
+                    if (piece is KingB or DragonB or BishopB or
+                        HorseB or GoldB or SilverB or
+                        ProShilverB or ProKnightB or ProLanceB or
+                        ProPownB) return true;
 
                     while (position.IsOnBoard)
                     {
                         piece = Pieces[position];
                         if (piece.IsEmpty()) position = position.DownLeft();
-                        else if (piece is 角B or 龍馬B) return true;
+                        else if (piece is BishopB or HorseB) return true;
                         else break;
                     }
                 }
@@ -513,15 +513,15 @@ namespace Shogi1.Domain.Model.Boards
                 if (position.IsOnBoard)
                 {
                     var piece = Pieces[position];
-                    if (piece is 王B or 飛B or 龍王B or
-                        龍馬B or 金B or 成銀B or
-                        成桂B or 成香B or と金B) return true;
+                    if (piece is KingB or RookB or DragonB or
+                        HorseB or GoldB or ProShilverB or
+                        ProKnightB or ProLanceB or ProPownB) return true;
 
                     while (position.IsOnBoard)
                     {
                         piece = Pieces[position];
                         if (piece.IsEmpty()) position = position.Left();
-                        else if (piece is 飛B or 龍王B) return true;
+                        else if (piece is RookB or DragonB) return true;
                         else break;
                     }
                 }
@@ -531,20 +531,20 @@ namespace Shogi1.Domain.Model.Boards
                 if (position.IsOnBoard)
                 {
                     var piece = Pieces[position];
-                    if (piece is 王B or 龍王B or 角B or
-                        龍馬B or 銀B) return true;
+                    if (piece is KingB or DragonB or BishopB or
+                        HorseB or SilverB) return true;
 
                     while (position.IsOnBoard)
                     {
                         piece = Pieces[position];
                         if (piece.IsEmpty()) position = position.UpLeft();
-                        else if (piece is 角B or 龍馬B) return true;
+                        else if (piece is BishopB or HorseB) return true;
                         else break;
                     }
                 }
 
                 //桂馬
-                if (new Position[] { kingPos.JumpDownLeft(), kingPos.JumpDownRight() }.Any(x => x.IsOnBoard && Pieces[x] == 桂B)) return true;
+                if (new Position[] { kingPos.JumpDownLeft(), kingPos.JumpDownRight() }.Any(x => x.IsOnBoard && Pieces[x] == KnightB)) return true;
             }
             return false;
         }
@@ -560,18 +560,18 @@ namespace Shogi1.Domain.Model.Boards
             if (p.IsOnBoard)
             {
                 var piece = Pieces[p];
-                if (piece is 王B or 龍馬B or 金B or
-                    成銀B or 成桂B or 成香B or
-                    と金B) b++;
-                if (piece is 王W or 龍馬W or 金W or
-                    銀W or 成銀W or 成桂W or
-                    成香W or 歩W or と金W) w++;
+                if (piece is KingB or HorseB or GoldB or
+                    ProShilverB or ProKnightB or ProLanceB or
+                    ProPownB) b++;
+                if (piece is KingW or HorseW or GoldW or
+                    ShilverW or ProShilverW or ProKnightW or
+                    ProLanceW or PawnW or ProPawnW) w++;
                 while (p.IsOnBoard)
                 {
                     piece = Pieces[p];
                     if (piece.IsEmpty()) p = p.Up();
-                    else if (piece is 飛B or 龍王B) { b++; break; }
-                    else if (piece is 飛W or 龍王W or 香W) { w++; break; }
+                    else if (piece is RookB or DragonB) { b++; break; }
+                    else if (piece is RookW or DragonW or LanceW) { w++; break; }
                     else break;
                 }
             }
@@ -581,17 +581,17 @@ namespace Shogi1.Domain.Model.Boards
             if (p.IsOnBoard)
             {
                 var piece = Pieces[p];
-                if (piece is 王B or 龍王B or 銀B) b++;
-                if (piece is 王W or 龍王W or 金W or
-                    銀W or 成銀W or 成桂W or
-                    成香W or と金W) w++;
+                if (piece is KingB or DragonB or SilverB) b++;
+                if (piece is KingW or DragonW or GoldW or
+                    ShilverW or ProShilverW or ProKnightW or
+                    ProLanceW or ProPawnW) w++;
 
                 while (p.IsOnBoard)
                 {
                     piece = Pieces[p];
                     if (piece.IsEmpty()) p = p.UpRight();
-                    else if (piece is 角B or 龍馬B) { b++; break; }
-                    else if (piece is 角W or 龍馬W) { w++; break; }
+                    else if (piece is BishopB or HorseB) { b++; break; }
+                    else if (piece is BishopW or HorseW) { w++; break; }
                     else break;
                 }
             }
@@ -601,19 +601,19 @@ namespace Shogi1.Domain.Model.Boards
             if (p.IsOnBoard)
             {
                 var piece = Pieces[p];
-                if (piece is 王B or 龍馬B or 金B or
-                    成銀B or 成桂B or 成香B or
-                    と金B) b++;
-                if (piece is 王W or 龍馬W or 金W or
-                    成銀W or 成桂W or 成香W or
-                    と金W) w++;
+                if (piece is KingB or HorseB or GoldB or
+                    ProShilverB or ProKnightB or ProLanceB or
+                    ProPownB) b++;
+                if (piece is KingW or HorseW or GoldW or
+                    ProShilverW or ProKnightW or ProLanceW or
+                    ProPawnW) w++;
 
                 while (p.IsOnBoard)
                 {
                     piece = Pieces[p];
                     if (piece.IsEmpty()) p = p.Right();
-                    else if (piece is 飛B or 龍王B) { b++; break; }
-                    else if (piece is 飛W or 龍王W) { w++; break; }
+                    else if (piece is RookB or DragonB) { b++; break; }
+                    else if (piece is RookW or DragonW) { w++; break; }
                     else break;
                 }
             }
@@ -623,17 +623,17 @@ namespace Shogi1.Domain.Model.Boards
             if (p.IsOnBoard)
             {
                 var piece = Pieces[p];
-                if (piece is 王B or 龍王B or 金B or
-                    銀B or 成銀B or 成桂B or
-                    成香B or と金B) b++;
-                if (piece is 王W or 龍王W or 銀W) w++;
+                if (piece is KingB or DragonB or GoldB or
+                    SilverB or ProShilverB or ProKnightB or
+                    ProLanceB or ProPownB) b++;
+                if (piece is KingW or DragonW or ShilverW) w++;
 
                 while (p.IsOnBoard)
                 {
                     piece = Pieces[p];
                     if (piece.IsEmpty()) p = p.DownRight();
-                    else if (piece is 角B or 龍馬B) { b++; break; }
-                    else if (piece is 角W or 龍馬W) { w++; break; }
+                    else if (piece is BishopB or HorseB) { b++; break; }
+                    else if (piece is BishopW or HorseW) { w++; break; }
                     else break;
                 }
             }
@@ -643,19 +643,19 @@ namespace Shogi1.Domain.Model.Boards
             if (p.IsOnBoard)
             {
                 var piece = Pieces[p];
-                if (piece is 王B or 龍馬B or 金B or
-                    銀B or 成銀B or 成桂B or
-                    成香B or 歩B or と金B) b++;
-                if (piece is 王W or 龍馬W or 金W or
-                    成銀W or 成桂W or 成香W or
-                    と金W) w++;
+                if (piece is KingB or HorseB or GoldB or
+                    SilverB or ProShilverB or ProKnightB or
+                    ProLanceB or PawnB or ProPownB) b++;
+                if (piece is KingW or HorseW or GoldW or
+                    ProShilverW or ProKnightW or ProLanceW or
+                    ProPawnW) w++;
 
                 while (p.IsOnBoard)
                 {
                     piece = Pieces[p];
                     if (piece.IsEmpty()) p = p.Down();
-                    else if (piece is 飛B or 龍王B or 香B) { b++; break; }
-                    else if (piece is 飛W or 龍王W) { w++; break; }
+                    else if (piece is RookB or DragonB or LanceB) { b++; break; }
+                    else if (piece is RookW or DragonW) { w++; break; }
                     else break;
                 }
             }
@@ -665,17 +665,17 @@ namespace Shogi1.Domain.Model.Boards
             if (p.IsOnBoard)
             {
                 var piece = Pieces[p];
-                if (piece is 王B or 龍王B or 金B or
-                    銀B or 成銀B or 成桂B or
-                    成香B or と金B) b++;
-                if (piece is 王W or 龍王W or 銀W) w++;
+                if (piece is KingB or DragonB or GoldB or
+                    SilverB or ProShilverB or ProKnightB or
+                    ProLanceB or ProPownB) b++;
+                if (piece is KingW or DragonW or ShilverW) w++;
 
                 while (p.IsOnBoard)
                 {
                     piece = Pieces[p];
                     if (piece.IsEmpty()) p = p.DownLeft();
-                    else if (piece is 角B or 龍馬B) { b++; break; }
-                    else if (piece is 角W or 龍馬W) { w++; break; }
+                    else if (piece is BishopB or HorseB) { b++; break; }
+                    else if (piece is BishopW or HorseW) { w++; break; }
                     else break;
                 }
             }
@@ -685,19 +685,19 @@ namespace Shogi1.Domain.Model.Boards
             if (p.IsOnBoard)
             {
                 var piece = Pieces[p];
-                if (piece is 王B or 龍馬B or 金B or
-                    成銀B or 成桂B or 成香B or
-                    と金B) b++;
-                if (piece is 王W or 龍馬W or 金W or
-                    成銀W or 成桂W or 成香W or
-                    と金W) w++;
+                if (piece is KingB or HorseB or GoldB or
+                    ProShilverB or ProKnightB or ProLanceB or
+                    ProPownB) b++;
+                if (piece is KingW or HorseW or GoldW or
+                    ProShilverW or ProKnightW or ProLanceW or
+                    ProPawnW) w++;
 
                 while (p.IsOnBoard)
                 {
                     piece = Pieces[p];
                     if (piece.IsEmpty()) p = p.Left();
-                    else if (piece is 飛B or 龍王B) { b++; break; }
-                    else if (piece is 飛W or 龍王W) { w++; break; }
+                    else if (piece is RookB or DragonB) { b++; break; }
+                    else if (piece is RookW or DragonW) { w++; break; }
                     else break;
                 }
             }
@@ -707,26 +707,26 @@ namespace Shogi1.Domain.Model.Boards
             if (p.IsOnBoard)
             {
                 var piece = Pieces[p];
-                if (piece is 王B or 龍王B or 銀B) b++;
-                if (piece is 王W or 龍王W or 金W or
-                    銀W or 成銀W or 成桂W or
-                    成香W or と金W) w++;
+                if (piece is KingB or DragonB or SilverB) b++;
+                if (piece is KingW or DragonW or GoldW or
+                    ShilverW or ProShilverW or ProKnightW or
+                    ProLanceW or ProPawnW) w++;
 
                 while (p.IsOnBoard)
                 {
                     piece = Pieces[p];
                     if (piece.IsEmpty()) p = p.UpLeft();
-                    else if (piece is 角B or 龍馬B) { b++; break; }
-                    else if (piece is 角W or 龍馬W) { w++; break; }
+                    else if (piece is BishopB or HorseB) { b++; break; }
+                    else if (piece is BishopW or HorseW) { w++; break; }
                     else break;
                 }
             }
 
             //桂馬
-            if (position.JumpDownLeft().IsOnBoard && Pieces[position.JumpDownLeft()] == 桂B) b++;
-            if (position.JumpDownRight().IsOnBoard && Pieces[position.JumpDownRight()] == 桂B) b++;
-            if (position.JumpUpRight().IsOnBoard && Pieces[position.JumpUpRight()] == 桂W) w++;
-            if (position.JumpUpRight().IsOnBoard && Pieces[position.JumpUpRight()] == 桂W) w++;
+            if (position.JumpDownLeft().IsOnBoard && Pieces[position.JumpDownLeft()] == KnightB) b++;
+            if (position.JumpDownRight().IsOnBoard && Pieces[position.JumpDownRight()] == KnightB) b++;
+            if (position.JumpUpRight().IsOnBoard && Pieces[position.JumpUpRight()] == KnightW) w++;
+            if (position.JumpUpRight().IsOnBoard && Pieces[position.JumpUpRight()] == KnightW) w++;
 
             return (b, w);
         }

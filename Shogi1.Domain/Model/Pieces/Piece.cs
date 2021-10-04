@@ -2,34 +2,121 @@
 {
     public enum Piece
     {
-        空,
-        王B,
-        飛B,
-        龍王B,
-        角B,
-        龍馬B,
-        金B,
-        銀B,
-        成銀B,
-        桂B,
-        成桂B,
-        香B,
-        成香B,
-        歩B,
-        と金B,
-        王W,
-        飛W,
-        龍王W,
-        角W,
-        龍馬W,
-        金W,
-        銀W,
-        成銀W,
-        桂W,
-        成桂W,
-        香W,
-        成香W,
-        歩W,
-        と金W,
+        /// <summary>
+        /// 空
+        /// </summary>
+        None,
+        /// <summary>
+        /// 玉将(先手)
+        /// </summary>
+        KingB,
+        /// <summary>
+        /// 飛車(先手)
+        /// </summary>
+        RookB,
+        /// <summary>
+        /// 龍王(先手)
+        /// </summary>
+        DragonB,
+        /// <summary>
+        /// 角行(先手)
+        /// </summary>
+        BishopB,
+        /// <summary>
+        /// 龍馬(先手)
+        /// </summary>
+        HorseB,
+        /// <summary>
+        /// 金将(先手)
+        /// </summary>
+        GoldB,
+        /// <summary>
+        /// 銀将(先手)
+        /// </summary>
+        SilverB,
+        /// <summary>
+        /// 成銀(先手)
+        /// </summary>
+        ProShilverB,
+        /// <summary>
+        /// 桂馬(先手)
+        /// </summary>
+        KnightB,
+        /// <summary>
+        /// 成桂(先手)
+        /// </summary>
+        ProKnightB,
+        /// <summary>
+        /// 香車(先手)
+        /// </summary>
+        LanceB,
+        /// <summary>
+        /// 成香(先手)
+        /// </summary>
+        ProLanceB,
+        /// <summary>
+        /// 歩兵(先手)
+        /// </summary>
+        PawnB,
+        /// <summary>
+        /// と金(先手)
+        /// </summary>
+        ProPownB,
+        /// <summary>
+        /// 玉将(後手)
+        /// </summary>
+        KingW,
+        /// <summary>
+        /// 飛車(後手)
+        /// </summary>
+        RookW,
+        /// <summary>
+        /// 龍王(後手)
+        /// </summary>
+        DragonW,
+        /// <summary>
+        /// 角行(後手)
+        /// </summary>
+        BishopW,
+        /// <summary>
+        /// 龍馬(後手)
+        /// </summary>
+        HorseW,
+        /// <summary>
+        /// 金将(後手)
+        /// </summary>
+        GoldW,
+        /// <summary>
+        /// 銀将(後手)
+        /// </summary>
+        ShilverW,
+        /// <summary>
+        /// 成銀(後手)
+        /// </summary>
+        ProShilverW,
+        /// <summary>
+        /// 桂馬(後手)
+        /// </summary>
+        KnightW,
+        /// <summary>
+        /// 成桂(後手)
+        /// </summary>
+        ProKnightW,
+        /// <summary>
+        /// 香車(後手)
+        /// </summary>
+        LanceW,
+        /// <summary>
+        /// 成香(後手)
+        /// </summary>
+        ProLanceW,
+        /// <summary>
+        /// 歩兵(後手)
+        /// </summary>
+        PawnW,
+        /// <summary>
+        /// と金(後手)
+        /// </summary>
+        ProPawnW,
     }
 }

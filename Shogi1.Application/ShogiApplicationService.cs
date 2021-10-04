@@ -89,35 +89,35 @@ namespace Shogi1.Application
 
         private static Piece ToPiece(ModelPiece piece) => piece switch
         {
-            空 => None,
-            王B => 玉将,
-            飛B => 飛車,
-            龍王B => 龍王,
-            角B => 角行,
-            龍馬B => 龍馬,
-            金B => 金将,
-            銀B => 銀将,
-            成銀B => 成銀,
-            桂B => 桂馬,
-            成桂B => 成桂,
-            香B => 香車,
-            成香B => 成香,
-            歩B => 歩兵,
-            と金B => と金,
-            王W => 王将,
-            飛W => 飛車,
-            龍王W => 龍王,
-            角W => 角行,
-            龍馬W => 龍馬,
-            金W => 金将,
-            銀W => 銀将,
-            成銀W => 成銀,
-            桂W => 桂馬,
-            成桂W => 成桂,
-            香W => 香車,
-            成香W => 成香,
-            歩W => 歩兵,
-            と金W => と金,
+            ModelPiece.None => Piece.None,
+            KingB => 玉将,
+            RookB => 飛車,
+            DragonB => 龍王,
+            BishopB => 角行,
+            HorseB => 龍馬,
+            GoldB => 金将,
+            SilverB => 銀将,
+            ProShilverB => 成銀,
+            KnightB => 桂馬,
+            ProKnightB => 成桂,
+            LanceB => 香車,
+            ProLanceB => 成香,
+            PawnB => 歩兵,
+            ProPownB => と金,
+            KingW => 王将,
+            RookW => 飛車,
+            DragonW => 龍王,
+            BishopW => 角行,
+            HorseW => 龍馬,
+            GoldW => 金将,
+            ShilverW => 銀将,
+            ProShilverW => 成銀,
+            KnightW => 桂馬,
+            ProKnightW => 成桂,
+            LanceW => 香車,
+            ProLanceW => 成香,
+            PawnW => 歩兵,
+            ProPawnW => と金,
             _ => throw new NotImplementedException(),
         };
 
@@ -130,10 +130,10 @@ namespace Shogi1.Application
             {
                 var from = new Position(move.From);
                 var isPromoted = move.Promoted;
-                var promotePiece = isPromoted ? ToPiece(move.Piece.Promote()) : None;
+                var promotePiece = isPromoted ? ToPiece(move.Piece.Promote()) : Piece.None;
                 var isCaptured = move.Captured;
                 var capturedPiece = isCaptured
-                    ? ToPiece(move.PieceCaptured.Unpromote()) : None;
+                    ? ToPiece(move.PieceCaptured.Unpromote()) : Piece.None;
                 return new Move(c, from, to, piece, eval, isPromoted, promotePiece, isCaptured, capturedPiece);
             }
             else

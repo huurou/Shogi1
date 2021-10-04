@@ -25,8 +25,8 @@ namespace Shogi1.Domain.Model.AIs.Evaluators
                 {
                     var p = new Position(x, y);
                     var (eb, ew) = board.Effects(p);
-                    var (db, dw) = (Dist(p, new Position(Array.IndexOf(board.Pieces, 王B))),
-                                    Dist(p, new Position(Array.IndexOf(board.Pieces, 王W))));
+                    var (db, dw) = (Dist(p, new Position(Array.IndexOf(board.Pieces, KingB))),
+                                    Dist(p, new Position(Array.IndexOf(board.Pieces, KingW))));
                     res += (eb * playerEffectValues_[db] - ew * opponentEffectValues_[db]
                         - ew * playerEffectValues_[dw] + eb * opponentEffectValues_[dw]) / 1024;
                 }

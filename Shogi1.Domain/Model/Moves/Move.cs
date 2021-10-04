@@ -16,7 +16,7 @@ namespace Shogi1.Domain.Model.Moves
         public bool Promoted { get; }
 
         internal Move(bool teban, Piece piece, Position to, Position from,
-                    bool captured = false, Piece pieceCaptured = 空, bool promoted = false)
+                    bool captured = false, Piece pieceCaptured = None, bool promoted = false)
             : base(teban, piece, to)
         {
             From = from;

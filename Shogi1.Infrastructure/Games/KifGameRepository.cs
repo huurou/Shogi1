@@ -52,35 +52,35 @@ namespace Shogi1.Infrastructure.Games
 
             static Piece ToPiece(Domain.Model.Pieces.Piece piece) => piece switch
             {
-                Domain.Model.Pieces.Piece.王B or
-                Domain.Model.Pieces.Piece.王W => 玉,
-                Domain.Model.Pieces.Piece.飛B or
-                Domain.Model.Pieces.Piece.飛W => 飛,
-                Domain.Model.Pieces.Piece.龍王B or
-                Domain.Model.Pieces.Piece.龍王W => 龍,
-                Domain.Model.Pieces.Piece.角B or
-                Domain.Model.Pieces.Piece.角W => 角,
-                Domain.Model.Pieces.Piece.龍馬B or
-                Domain.Model.Pieces.Piece.龍馬W => 馬,
-                Domain.Model.Pieces.Piece.金B or
-                Domain.Model.Pieces.Piece.金W => 金,
-                Domain.Model.Pieces.Piece.銀B or
-                Domain.Model.Pieces.Piece.銀W => 銀,
-                Domain.Model.Pieces.Piece.成銀B or
-                Domain.Model.Pieces.Piece.成銀W => 成銀,
-                Domain.Model.Pieces.Piece.桂B or
-                Domain.Model.Pieces.Piece.桂W => 桂,
-                Domain.Model.Pieces.Piece.成桂B or
-                Domain.Model.Pieces.Piece.成桂W => 成桂,
-                Domain.Model.Pieces.Piece.香B or
-                Domain.Model.Pieces.Piece.香W => 香,
-                Domain.Model.Pieces.Piece.成香B or
-                Domain.Model.Pieces.Piece.成香W => 成香,
-                Domain.Model.Pieces.Piece.歩B or
-                Domain.Model.Pieces.Piece.歩W => 歩,
-                Domain.Model.Pieces.Piece.と金B or
-                Domain.Model.Pieces.Piece.と金W => と,
-                Domain.Model.Pieces.Piece.空 => throw new InvalidOperationException(),
+                Domain.Model.Pieces.Piece.KingB or
+                Domain.Model.Pieces.Piece.KingW => 玉,
+                Domain.Model.Pieces.Piece.RookB or
+                Domain.Model.Pieces.Piece.RookW => 飛,
+                Domain.Model.Pieces.Piece.DragonB or
+                Domain.Model.Pieces.Piece.DragonW => 龍,
+                Domain.Model.Pieces.Piece.BishopB or
+                Domain.Model.Pieces.Piece.BishopW => 角,
+                Domain.Model.Pieces.Piece.HorseB or
+                Domain.Model.Pieces.Piece.HorseW => 馬,
+                Domain.Model.Pieces.Piece.GoldB or
+                Domain.Model.Pieces.Piece.GoldW => 金,
+                Domain.Model.Pieces.Piece.SilverB or
+                Domain.Model.Pieces.Piece.ShilverW => 銀,
+                Domain.Model.Pieces.Piece.ProShilverB or
+                Domain.Model.Pieces.Piece.ProShilverW => 成銀,
+                Domain.Model.Pieces.Piece.KnightB or
+                Domain.Model.Pieces.Piece.KnightW => 桂,
+                Domain.Model.Pieces.Piece.ProKnightB or
+                Domain.Model.Pieces.Piece.ProKnightW => 成桂,
+                Domain.Model.Pieces.Piece.LanceB or
+                Domain.Model.Pieces.Piece.LanceW => 香,
+                Domain.Model.Pieces.Piece.ProLanceB or
+                Domain.Model.Pieces.Piece.ProLanceW => 成香,
+                Domain.Model.Pieces.Piece.PawnB or
+                Domain.Model.Pieces.Piece.PawnW => 歩,
+                Domain.Model.Pieces.Piece.ProPownB or
+                Domain.Model.Pieces.Piece.ProPawnW => と,
+                Domain.Model.Pieces.Piece.None => throw new InvalidOperationException(),
                 _ => throw new NotImplementedException(),
             };
         }

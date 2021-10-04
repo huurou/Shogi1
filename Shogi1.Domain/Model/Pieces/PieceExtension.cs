@@ -9,62 +9,62 @@ namespace Shogi1.Domain.Model.Pieces
 {
     internal static class PieceExtension
     {
-        internal static bool IsEmpty(this Piece piece) => piece == 空;
+        internal static bool IsEmpty(this Piece piece) => piece == None;
 
-        internal static bool IsPiece(this Piece piece) => piece != 空;
+        internal static bool IsPiece(this Piece piece) => piece != None;
 
         internal static bool GetTeban(this Piece piece)
         {
             return piece switch
             {
-                王B or 飛B or 龍王B or
-                角B or 龍馬B or 金B or
-                銀B or 成銀B or 桂B or
-                成桂B or 香B or 成香B or
-                歩B or と金B => BLACK,
+                KingB or RookB or DragonB or
+                BishopB or HorseB or GoldB or
+                SilverB or ProShilverB or KnightB or
+                ProKnightB or LanceB or ProLanceB or
+                PawnB or ProPownB => BLACK,
 
-                王W or 飛W or 龍王W or
-                角W or 龍馬W or 金W or
-                銀W or 成銀W or 桂W or
-                成桂W or 香W or 成香W or
-                歩W or と金W => WHITE,
+                KingW or RookW or DragonW or
+                BishopW or HorseW or GoldW or
+                ShilverW or ProShilverW or KnightW or
+                ProKnightW or LanceW or ProLanceW or
+                PawnW or ProPawnW => WHITE,
 
-                空 => throw new InvalidOperationException(),
+                None => throw new InvalidOperationException(),
                 _ => throw new NotSupportedException(),
             };
         }
 
         internal static Piece ReverseTeban(this Piece piece) => piece switch
         {
-            王B => 王W,
-            飛B => 飛W,
-            龍王B => 龍王W,
-            角B => 角W,
-            龍馬B => 龍馬W,
-            金B => 金W,
-            銀B => 銀W,
-            成銀B => 成銀W,
-            桂B => 桂W,
-            成桂B => 成桂W,
-            香B => 香W,
-            成香B => 成香W,
-            歩B => 歩W,
-            と金B => と金W,
-            王W => 王B,
-            飛W => 飛B,
-            龍王W => 龍王B,
-            角W => 角B,
-            龍馬W => 龍馬B,
-            金W => 金B,
-            銀W => 銀B,
-            成銀W => 成銀B,
-            桂W => 桂B,
-            成桂W => 成桂B,
-            香W => 香B,
-            成香W => 成香B,
-            歩W => 歩B,
-            と金W => と金B,
-            空 => throw new InvalidOperationException(),
+            KingB => KingW,
+            RookB => RookW,
+            DragonB => DragonW,
+            BishopB => BishopW,
+            HorseB => HorseW,
+            GoldB => GoldW,
+            SilverB => ShilverW,
+            ProShilverB => ProShilverW,
+            KnightB => KnightW,
+            ProKnightB => ProKnightW,
+            LanceB => LanceW,
+            ProLanceB => ProLanceW,
+            PawnB => PawnW,
+            ProPownB => ProPawnW,
+            KingW => KingB,
+            RookW => RookB,
+            DragonW => DragonB,
+            BishopW => BishopB,
+            HorseW => HorseB,
+            GoldW => GoldB,
+            ShilverW => SilverB,
+            ProShilverW => ProShilverB,
+            KnightW => KnightB,
+            ProKnightW => ProKnightB,
+            LanceW => LanceB,
+            ProLanceW => ProLanceB,
+            PawnW => PawnB,
+            ProPawnW => ProPownB,
+            None => throw new InvalidOperationException(),
             _ => throw new NotSupportedException(),
         };
 
@@ -72,81 +72,81 @@ namespace Shogi1.Domain.Model.Pieces
         {
             return piece switch
             {
-                飛B or 角B or 銀B or
-                桂B or 香B or 歩B or
-                飛W or 角W or 銀W or
-                桂W or 香W or 歩W => true,
+                RookB or BishopB or SilverB or
+                KnightB or LanceB or PawnB or
+                RookW or BishopW or ShilverW or
+                KnightW or LanceW or PawnW => true,
 
-                王B or 龍王B or 龍馬B or
-                金B or 成銀B or 成桂B or
-                成香B or と金B or 王W or
-                龍王W or 龍馬W or 金W or
-                成銀W or 成桂W or 成香W or
-                と金W => false,
+                KingB or DragonB or HorseB or
+                GoldB or ProShilverB or ProKnightB or
+                ProLanceB or ProPownB or KingW or
+                DragonW or HorseW or GoldW or
+                ProShilverW or ProKnightW or ProLanceW or
+                ProPawnW => false,
 
-                空 => throw new InvalidOperationException(),
+                None => throw new InvalidOperationException(),
                 _ => throw new NotSupportedException(),
             };
         }
 
         internal static bool IsPromoted(this Piece piece) => piece switch
         {
-            龍王B or 龍馬B or 成銀B or
-            成桂B or 成香B or と金B or
-            龍王W or 龍馬W or 成銀W or
-            成桂W or 成香W or と金W => true,
+            DragonB or HorseB or ProShilverB or
+            ProKnightB or ProLanceB or ProPownB or
+            DragonW or HorseW or ProShilverW or
+            ProKnightW or ProLanceW or ProPawnW => true,
 
-            王B or 飛B or 角B or
-            金B or 銀B or 桂B or
-            香B or 歩B or 王W or
-            飛W or 角W or 金W or
-            銀W or 桂W or 香W or 歩W => false,
+            KingB or RookB or BishopB or
+            GoldB or SilverB or KnightB or
+            LanceB or PawnB or KingW or
+            RookW or BishopW or GoldW or
+            ShilverW or KnightW or LanceW or PawnW => false,
 
-            空 => throw new InvalidOperationException(),
+            None => throw new InvalidOperationException(),
             _ => throw new NotSupportedException(),
         };
 
         internal static Piece Promote(this Piece piece) => piece switch
         {
-            飛B => 龍王B,
-            角B => 龍馬B,
-            銀B => 成銀B,
-            桂B => 成桂B,
-            香B => 成香B,
-            歩B => と金B,
-            飛W => 龍王W,
-            角W => 龍馬W,
-            銀W => 成銀W,
-            桂W => 成桂W,
-            香W => 成香W,
-            歩W => と金W,
+            RookB => DragonB,
+            BishopB => HorseB,
+            SilverB => ProShilverB,
+            KnightB => ProKnightB,
+            LanceB => ProLanceB,
+            PawnB => ProPownB,
+            RookW => DragonW,
+            BishopW => HorseW,
+            ShilverW => ProShilverW,
+            KnightW => ProKnightW,
+            LanceW => ProLanceW,
+            PawnW => ProPawnW,
 
-            王B or 龍王B or 龍馬B or
-            金B or 成銀B or 成桂B or
-            成香B or と金B or 王W or
-            龍王W or 龍馬W or 金W or
-            成銀W or 成桂W or 成香W or
-            と金W or 空 => throw new InvalidOperationException(),
+            KingB or DragonB or HorseB or
+            GoldB or ProShilverB or ProKnightB or
+            ProLanceB or ProPownB or KingW or
+            DragonW or HorseW or GoldW or
+            ProShilverW or ProKnightW or ProLanceW or
+            ProPawnW or None => throw new InvalidOperationException(),
             _ => throw new NotSupportedException(),
         };
 
         internal static Piece Unpromote(this Piece piece) => piece switch
         {
-            飛B or 龍王B => 飛B,
-            角B or 龍馬B => 角B,
-            金B => 金B,
-            銀B or 成銀B => 銀B,
-            桂B or 成桂B => 桂B,
-            香B or 成香B => 香B,
-            歩B or と金B => 歩B,
-            飛W or 龍王W => 飛W,
-            角W or 龍馬W => 角W,
-            金W => 金W,
-            銀W or 成銀W => 銀W,
-            桂W or 成桂W => 桂W,
-            香W or 成香W => 香W,
-            歩W or と金W => 歩W,
-            王B or 王W or 空 => throw new InvalidOperationException(),
+            RookB or DragonB => RookB,
+            BishopB or HorseB => BishopB,
+            GoldB => GoldB,
+            SilverB or ProShilverB => SilverB,
+            KnightB or ProKnightB => KnightB,
+            LanceB or ProLanceB => LanceB,
+            PawnB or ProPownB => PawnB,
+            RookW or DragonW => RookW,
+            BishopW or HorseW => BishopW,
+            GoldW => GoldW,
+            ShilverW or ProShilverW => ShilverW,
+            KnightW or ProKnightW => KnightW,
+            LanceW or ProLanceW => LanceW,
+            PawnW or ProPawnW => PawnW,
+            KingB or KingW or None => throw new InvalidOperationException(),
             _ => throw new NotSupportedException(),
         };
 
@@ -154,7 +154,7 @@ namespace Shogi1.Domain.Model.Pieces
         {
             switch (piece)
             {
-                case 王B:
+                case KingB:
                     return new Position[]
                     {
                         position.Up(),
@@ -167,13 +167,13 @@ namespace Shogi1.Domain.Model.Pieces
                         position.UpLeft(),
                     }.Where(x => x.IsOnBoard).ToList();
 
-                case 飛B:
+                case RookB:
                     return UpToEnd(position)
                         .Concat(RightToEnd(position))
                         .Concat(DownToEnd(position))
                         .Concat(LeftToEnd(position)).ToList();
 
-                case 龍王B:
+                case DragonB:
                     return new Position[]
                     {
                         position.UpRight(),
@@ -186,13 +186,13 @@ namespace Shogi1.Domain.Model.Pieces
                     .Concat(DownToEnd(position))
                     .Concat(LeftToEnd(position)).ToList();
 
-                case 角B:
+                case BishopB:
                     return UpRightToEnd(position)
                         .Concat(DownRightToEnd(position))
                         .Concat(DownLeftToEnd(position))
                         .Concat(UpLeftToEnd(position)).ToList();
 
-                case 龍馬B:
+                case HorseB:
                     return new Position[]
                     {
                         position.Up(),
@@ -205,7 +205,7 @@ namespace Shogi1.Domain.Model.Pieces
                     .Concat(DownLeftToEnd(position))
                     .Concat(UpLeftToEnd(position)).ToList();
 
-                case 金B:
+                case GoldB:
                     return new Position[]
                     {
                         position.Up(),
@@ -216,7 +216,7 @@ namespace Shogi1.Domain.Model.Pieces
                         position.UpLeft(),
                     }.Where(x => x.IsOnBoard).ToList();
 
-                case 銀B:
+                case SilverB:
                     return new Position[]
                     {
                         position.Up(),
@@ -226,7 +226,7 @@ namespace Shogi1.Domain.Model.Pieces
                         position.UpLeft(),
                     }.Where(x => x.IsOnBoard).ToList();
 
-                case 成銀B:
+                case ProShilverB:
                     return new Position[]
                     {
                         position.Up(),
@@ -237,14 +237,14 @@ namespace Shogi1.Domain.Model.Pieces
                         position.UpLeft(),
                     }.Where(x => x.IsOnBoard).ToList();
 
-                case 桂B:
+                case KnightB:
                     return new Position[]
                     {
                         position.JumpUpLeft(),
                         position.JumpUpRight(),
                     }.Where(x => x.IsOnBoard).ToList();
 
-                case 成桂B:
+                case ProKnightB:
                     return new Position[]
                     {
                         position.Up(),
@@ -255,10 +255,10 @@ namespace Shogi1.Domain.Model.Pieces
                         position.UpLeft(),
                     }.Where(x => x.IsOnBoard).ToList();
 
-                case 香B:
+                case LanceB:
                     return UpToEnd(position).ToList();
 
-                case 成香B:
+                case ProLanceB:
                     return new Position[]
                     {
                         position.Up(),
@@ -269,13 +269,13 @@ namespace Shogi1.Domain.Model.Pieces
                         position.UpLeft(),
                     }.Where(x => x.IsOnBoard).ToList();
 
-                case 歩B:
+                case PawnB:
                     return new Position[]
                     {
                         position.Up(),
                     }.Where(x => x.IsOnBoard).ToList();
 
-                case と金B:
+                case ProPownB:
                     return new Position[]
                     {
                         position.Up(),
@@ -286,7 +286,7 @@ namespace Shogi1.Domain.Model.Pieces
                         position.UpLeft(),
                     }.Where(x => x.IsOnBoard).ToList();
 
-                case 王W:
+                case KingW:
                     return new Position[]
                     {
                         position.Up(),
@@ -299,13 +299,13 @@ namespace Shogi1.Domain.Model.Pieces
                         position.UpLeft(),
                     }.Where(x => x.IsOnBoard).ToList();
 
-                case 飛W:
+                case RookW:
                     return UpToEnd(position)
                         .Concat(RightToEnd(position))
                         .Concat(DownToEnd(position))
                         .Concat(LeftToEnd(position)).ToList();
 
-                case 龍王W:
+                case DragonW:
                     return new Position[]
                     {
                         position.UpRight(),
@@ -318,13 +318,13 @@ namespace Shogi1.Domain.Model.Pieces
                     .Concat(DownToEnd(position))
                     .Concat(LeftToEnd(position)).ToList();
 
-                case 角W:
+                case BishopW:
                     return UpRightToEnd(position)
                         .Concat(DownRightToEnd(position))
                         .Concat(DownLeftToEnd(position))
                         .Concat(UpLeftToEnd(position)).ToList();
 
-                case 龍馬W:
+                case HorseW:
                     return new Position[]
                     {
                         position.Up(),
@@ -337,7 +337,7 @@ namespace Shogi1.Domain.Model.Pieces
                     .Concat(DownLeftToEnd(position))
                     .Concat(UpLeftToEnd(position)).ToList();
 
-                case 金W:
+                case GoldW:
                     return new Position[]
                     {
                         position.Up(),
@@ -348,7 +348,7 @@ namespace Shogi1.Domain.Model.Pieces
                         position.Left(),
                     }.Where(x => x.IsOnBoard).ToList();
 
-                case 銀W:
+                case ShilverW:
                     return new Position[]
                     {
                         position.UpRight(),
@@ -358,7 +358,7 @@ namespace Shogi1.Domain.Model.Pieces
                         position.UpLeft(),
                     }.Where(x => x.IsOnBoard).ToList();
 
-                case 成銀W:
+                case ProShilverW:
                     return new Position[]
                     {
                         position.Up(),
@@ -369,14 +369,14 @@ namespace Shogi1.Domain.Model.Pieces
                         position.Left(),
                     }.Where(x => x.IsOnBoard).ToList();
 
-                case 桂W:
+                case KnightW:
                     return new Position[]
                     {
                         position.JumpDownLeft(),
                         position.JumpDownRight(),
                     }.Where(x => x.IsOnBoard).ToList();
 
-                case 成桂W:
+                case ProKnightW:
                     return new Position[]
                     {
                         position.Up(),
@@ -387,10 +387,10 @@ namespace Shogi1.Domain.Model.Pieces
                         position.Left(),
                     }.Where(x => x.IsOnBoard).ToList();
 
-                case 香W:
+                case LanceW:
                     return DownToEnd(position).ToList();
 
-                case 成香W:
+                case ProLanceW:
                     return new Position[]
                     {
                         position.Up(),
@@ -401,13 +401,13 @@ namespace Shogi1.Domain.Model.Pieces
                         position.Left(),
                     }.Where(x => x.IsOnBoard).ToList();
 
-                case 歩W:
+                case PawnW:
                     return new Position[]
                     {
                         position.Down(),
                     }.Where(x => x.IsOnBoard).ToList();
 
-                case と金W:
+                case ProPawnW:
                     return new Position[]
                     {
                         position.Up(),
@@ -418,7 +418,7 @@ namespace Shogi1.Domain.Model.Pieces
                         position.Left(),
                     }.Where(x => x.IsOnBoard).ToList();
 
-                case 空:
+                case None:
                     throw new InvalidOperationException();
                 default: break;
             }
